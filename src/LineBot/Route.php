@@ -15,11 +15,6 @@ class Route
     public function register(\Slim\App $app)
     {
         $app->post('/callback', function (RequestInterface $req, ResponseInterface $res) {
-            /** @var \LINE\Clients\MessagingApi\Api\MessagingApiApi $bot */
-            $bot = $this->get(MessagingApiApi::class);
-            /** @var \Psr\Log\LoggerInterface logger */
-            $logger = $this->get(\Psr\Log\LoggerInterface::class);
-
             $signature = $req->getHeader(HTTPHeader::LINE_SIGNATURE);
             if (empty($signature)) {
                 return $res->withStatus(400, 'Bad Request');
