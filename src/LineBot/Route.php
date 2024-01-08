@@ -2,15 +2,11 @@
 
 namespace Lynk\LineBot;
 
-use LINE\Clients\MessagingApi\Model\ReplyMessageRequest;
-use LINE\Clients\MessagingApi\Model\TextMessage;
+use LINE\Clients\MessagingApi\Api\MessagingApiApi;
 use LINE\Constants\HTTPHeader;
-use LINE\Constants\MessageType;
 use LINE\Parser\EventRequestParser;
-use LINE\Webhook\Model\MessageEvent;
 use LINE\Parser\Exception\InvalidEventRequestException;
 use LINE\Parser\Exception\InvalidSignatureException;
-use LINE\Webhook\Model\TextMessageContent;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -20,7 +16,7 @@ class Route
     {
         $app->post('/callback', function (RequestInterface $req, ResponseInterface $res) {
             /** @var \LINE\Clients\MessagingApi\Api\MessagingApiApi $bot */
-            $bot = $this->get('botMessagingApi');
+            $bot = $this->get(MessagingApiApi::class);
             /** @var \Psr\Log\LoggerInterface logger */
             $logger = $this->get(\Psr\Log\LoggerInterface::class);
 
@@ -39,31 +35,9 @@ class Route
                 return $res->withStatus(400, "Invalid event request");
             }
 
-            foreach ($parsedEvents->getEvents() as $event) {
-                if (!($event instanceof MessageEvent)) {
-                    $logger->info('Non message event has come');
-                    continue;
-                }
-
-                $message = $event->getMessage();
-                if (!($message instanceof TextMessageContent)) {
-                    $logger->info('Non text message has come');
-                    continue;
-                }
-
-                $replyText = $message->getText();
-
-                try {
-                    $bot->replyMessage(new ReplyMessageRequest([
-                        'replyToken' => $event->getReplyToken(),
-                        'messages' => [(new TextMessage())->setText($replyText)->setType(MessageType::TEXT)],
-                    ]));
-                } catch (\LINE\Clients\MessagingApi\ApiException $e) {
-                    $logger->error($e->getCode() . ' ' . $e->getResponseBody());
-                } catch (\Throwable $th) {
-                    $logger->error($th);
-                }
-            }
+            /** @var EventHandler $eventHandler */
+            $eventHandler = $this->get(EventHandler::class);
+            $eventHandler->handle($parsedEvents->getEvents());
 
             $res->withStatus(200, 'OK');
             return $res;
