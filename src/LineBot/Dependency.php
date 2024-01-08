@@ -2,23 +2,30 @@
 
 namespace Lynk\LineBot;
 
+use DI\Container;
 use LINE\Clients\MessagingApi\Api\MessagingApiApi;
 use LINE\Clients\MessagingApi\Configuration;
+use Psr\Log\LoggerInterface;
+use Monolog\Logger;
+use Monolog\Processor\UidProcessor;
+use Monolog\Handler\StreamHandler;
+use Monolog\Level;
+use GuzzleHttp\Client;
 
 class Dependency
 {
-    public function register(\DI\Container $container)
+    public function register(Container $container)
     {
         $container->set('settings', function ($c) {
             return Setting::getSetting()['settings'];
         });
 
-        $container->set(\Psr\Log\LoggerInterface::class, function ($c) {
+        $container->set(LoggerInterface::class, function ($c) {
             $settings = $c->get('settings')['logger'];
-            $logger = new \Monolog\Logger($settings['name']);
-            $logger->pushProcessor(new \Monolog\Processor\UidProcessor());
-            $logger->pushHandler(new \Monolog\Handler\StreamHandler('php://stdout', \Monolog\Level::Debug));
-            $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['path'], \Monolog\Level::Debug));
+            $logger = new Logger($settings['name']);
+            $logger->pushProcessor(new UidProcessor());
+            $logger->pushHandler(new StreamHandler('php://stdout', Level::Debug));
+            $logger->pushHandler(new StreamHandler($settings['path'], Level::Debug));
             return $logger;
         });
 
@@ -28,7 +35,7 @@ class Dependency
             $config = new Configuration();
             $config->setAccessToken($channelToken);
             $bot = new MessagingApiApi(
-                client: new \GuzzleHttp\Client(),
+                client: new Client(),
                 config: $config,
             );
             return $bot;

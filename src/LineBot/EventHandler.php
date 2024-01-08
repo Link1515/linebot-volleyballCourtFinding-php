@@ -11,12 +11,15 @@ use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Webhook\Model\MessageEvent;
 use LINE\Webhook\Model\TextMessageContent;
 use LINE\Constants\MessageType;
+use LINE\Clients\MessagingApi\ApiException;
 use Psr\Log\LoggerInterface;
 
 class EventHandler
 {
-  public function __construct(private readonly LoggerInterface $logger, private readonly MessagingApiApi $bot)
-  {
+  public function __construct(
+    private readonly LoggerInterface $logger,
+    private readonly MessagingApiApi $bot,
+  ) {
   }
 
 
@@ -41,7 +44,7 @@ class EventHandler
           'replyToken' => $event->getReplyToken(),
           'messages' => [(new TextMessage())->setText($replyText)->setType(MessageType::TEXT)],
         ]));
-      } catch (\LINE\Clients\MessagingApi\ApiException $e) {
+      } catch (ApiException $e) {
         $this->logger->error($e->getCode() . ' ' . $e->getResponseBody());
       } catch (\Throwable $th) {
         $this->logger->error($th);
