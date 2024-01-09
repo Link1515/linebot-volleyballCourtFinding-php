@@ -7,14 +7,23 @@ use LINE\Constants\HTTPHeader;
 use LINE\Parser\EventRequestParser;
 use LINE\Parser\Exception\InvalidEventRequestException;
 use LINE\Parser\Exception\InvalidSignatureException;
+use LINE\Webhook\Model\MessageEvent;
+use LINE\Webhook\Model\TextMessageContent;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Lynk\LineBot\EventHandler\EventHandlerInterface;
+use Lynk\LineBot\EventHandler\MessageHandler\TextMessageHandler;
 
 class Route
 {
     public function register(\Slim\App $app)
     {
         $app->post('/callback', function (RequestInterface $req, ResponseInterface $res) {
+            /** @var \LINE\Clients\MessagingApi\Api\MessagingApiApi $bot */
+            $bot = $this->get(MessagingApiApi::class);
+            /** @var \Psr\Log\LoggerInterface $logger */
+            $logger = $this->get(\Psr\Log\LoggerInterface::class);
+
             $signature = $req->getHeader(HTTPHeader::LINE_SIGNATURE);
             if (empty($signature)) {
                 return $res->withStatus(400, 'Bad Request');
@@ -30,9 +39,20 @@ class Route
                 return $res->withStatus(400, "Invalid event request");
             }
 
-            /** @var EventHandler $eventHandler */
-            $eventHandler = $this->get(EventHandler::class);
-            $eventHandler->handle($parsedEvents->getEvents());
+            foreach ($parsedEvents->getEvents() as $event) {
+                /** @var EventHandlerInterface $handler */
+                $handler = null;
+
+                if ($event instanceof MessageEvent) {
+                    $message = $event->getMessage();
+                    if ($message instanceof TextMessageContent) {
+                        $handler = new TextMessageHandler($bot, $logger, $req, $event);
+                    }
+                }
+
+                $handler->handle();
+            }
+
 
             $res->withStatus(200, 'OK');
             return $res;
