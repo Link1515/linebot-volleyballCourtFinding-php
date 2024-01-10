@@ -6,8 +6,12 @@ namespace Lynk\LineBot\EventHandler\MessageHandler;
 
 use LINE\Clients\MessagingApi\Api\MessagingApiApi;
 use LINE\Clients\MessagingApi\ApiException;
+use LINE\Clients\MessagingApi\Model\LocationAction;
+use LINE\Clients\MessagingApi\Model\QuickReply;
+use LINE\Clients\MessagingApi\Model\QuickReplyItem;
 use LINE\Clients\MessagingApi\Model\ReplyMessageRequest;
 use LINE\Clients\MessagingApi\Model\TextMessage;
+use LINE\Constants\ActionType;
 use LINE\Constants\MessageType;
 use LINE\Webhook\Model\MessageEvent;
 use Lynk\LineBot\EventHandler\EventHandlerInterface;
@@ -29,7 +33,9 @@ class TextMessageHandler implements EventHandlerInterface
         $text = $this->event->getMessage()->getText();
         $replyToken = $this->event->getReplyToken();
 
-        if ($text === '使用教學') {
+        if ($text === '球場資訊') {
+            $this->locationQuickReply($replyToken);
+        } else if ($text === '使用教學') {
             $this->sendTutorialMsg($replyToken);
         }
     }
@@ -53,17 +59,53 @@ class TextMessageHandler implements EventHandlerInterface
         $this->replyText($replyToken, $tutorialMsg);
     }
 
-    private function replyText(string $replyToken, string $text)
+
+    private function locationQuickReply(string $replyToken): void
     {
-        $request = new ReplyMessageRequest([
+        $quickReply = new QuickReply([
+            'items' => [
+                new QuickReplyItem([
+                    'type' => 'action',
+                    'action' => new LocationAction([
+                        'type' => ActionType::LOCATION,
+                        'label' => '傳送位置'
+                    ])
+                ])
+            ]
+        ]);
+
+        $message = new TextMessage([
+            'type' => MessageType::TEXT,
+            'text' => '請點下方的按鈕，傳送您的位置',
+            'quickReply' => $quickReply
+        ]);
+
+        $botRequest = new ReplyMessageRequest([
             'replyToken' => $replyToken,
-            'messages' => [(new TextMessage())->setText($text)->setType(MessageType::TEXT)],
+            'messages' => [$message],
         ]);
 
         try {
-            $this->bot->replyMessage($request);
+            $this->bot->replyMessage($botRequest);
         } catch (ApiException $e) {
-            $this->logger->info('BODY:' . $e->getResponseBody());
+            $this->logger->error('BODY:' . $e->getResponseBody());
+            throw $e;
+        }
+    }
+
+    private function replyText(string $replyToken, string $text): void
+    {
+        $message = (new TextMessage())->setText($text)->setType(MessageType::TEXT);
+
+        $botRequest = new ReplyMessageRequest([
+            'replyToken' => $replyToken,
+            'messages' => [$message],
+        ]);
+
+        try {
+            $this->bot->replyMessage($botRequest);
+        } catch (ApiException $e) {
+            $this->logger->error('BODY:' . $e->getResponseBody());
             throw $e;
         }
     }
