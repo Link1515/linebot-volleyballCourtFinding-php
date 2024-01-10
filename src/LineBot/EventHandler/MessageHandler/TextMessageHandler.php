@@ -14,6 +14,7 @@ use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Constants\ActionType;
 use LINE\Constants\MessageType;
 use LINE\Webhook\Model\MessageEvent;
+use Lynk\LineBot\BotUtils;
 use Lynk\LineBot\EventHandler\EventHandlerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
@@ -56,9 +57,15 @@ class TextMessageHandler implements EventHandlerInterface
         如果有出現 bug 歡迎透過 github 聯繫我
         Msg;
 
-        $this->replyText($replyToken, $tutorialMsg);
-    }
+        $botRequest = BotUtils::createTextReplyRequest($replyToken, $tutorialMsg);
 
+        try {
+            $this->bot->replyMessage($botRequest);
+        } catch (ApiException $e) {
+            $this->logger->error('BODY:' . $e->getResponseBody());
+            throw $e;
+        }
+    }
 
     private function locationQuickReply(string $replyToken): void
     {
@@ -79,23 +86,6 @@ class TextMessageHandler implements EventHandlerInterface
             'text' => '請點下方的按鈕，傳送您的位置',
             'quickReply' => $quickReply
         ]);
-
-        $botRequest = new ReplyMessageRequest([
-            'replyToken' => $replyToken,
-            'messages' => [$message],
-        ]);
-
-        try {
-            $this->bot->replyMessage($botRequest);
-        } catch (ApiException $e) {
-            $this->logger->error('BODY:' . $e->getResponseBody());
-            throw $e;
-        }
-    }
-
-    private function replyText(string $replyToken, string $text): void
-    {
-        $message = (new TextMessage())->setText($text)->setType(MessageType::TEXT);
 
         $botRequest = new ReplyMessageRequest([
             'replyToken' => $replyToken,
