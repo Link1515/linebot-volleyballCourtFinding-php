@@ -6,6 +6,8 @@ namespace Lynk\LineBot\EventHandler\MessageHandler;
 
 use LINE\Clients\MessagingApi\Api\MessagingApiApi;
 use LINE\Clients\MessagingApi\ApiException;
+use LINE\Clients\MessagingApi\Model\TextMessage;
+use LINE\Constants\MessageType;
 use LINE\Webhook\Model\MessageEvent;
 use LINE\Webhook\Model\LocationMessageContent;
 use Lynk\LineBot\BotUtils;
@@ -68,7 +70,14 @@ class LocationMessageHandler implements EventHandlerInterface
         }
 
         $flexMessage = FlexSampleSportsField::get($result);
-        $botRequest = BotUtils::createMessageReplyRequest($this->event->getReplyToken(), $flexMessage);
+        $textMessage = new TextMessage([
+            'type' => MessageType::TEXT,
+            'text' => '請點選您想去的球場',
+        ]);
+        $botRequest = BotUtils::createMessageReplyRequest(
+            $this->event->getReplyToken(),
+            [$flexMessage, $textMessage]
+        );
 
         try {
             $this->bot->replyMessage($botRequest);

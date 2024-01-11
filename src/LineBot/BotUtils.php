@@ -11,11 +11,15 @@ use LINE\Constants\MessageType;
 
 class BotUtils
 {
-    public static function createMessageReplyRequest(string $replyToken, Message $message): ReplyMessageRequest
+    /**
+     * @param string $replyToken 
+     * @param Message[] $messages
+     */
+    public static function createMessageReplyRequest(string $replyToken, array $messages): ReplyMessageRequest
     {
         $botRequest = new ReplyMessageRequest([
             'replyToken' => $replyToken,
-            'messages' => [$message],
+            'messages' => $messages,
         ]);
 
         return $botRequest;
@@ -28,6 +32,6 @@ class BotUtils
             'text' => $text,
         ]);
 
-        return self::createMessageReplyRequest($replyToken, $textMessage);
+        return self::createMessageReplyRequest($replyToken, [$textMessage]);
     }
 }
