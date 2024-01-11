@@ -33,14 +33,7 @@ class LocationMessageHandler implements EventHandlerInterface
         $locationMessage = $this->event->getMessage();
         $userLocation = [$locationMessage->getLatitude(), $locationMessage->getLongitude()];
 
-        $sportsFieldInfoListFile = __DIR__ . '/../../../../data/sportsFieldInfoList.json';
-        if (!file_exists($sportsFieldInfoListFile)) {
-            include_once __DIR__ . '/../../../../scripts/fetchSportsFieldInfoList.php';
-        }
-
-
-        $sportsFieldInfoList =
-            json_decode(file_get_contents($sportsFieldInfoListFile));
+        $sportsFieldInfoList = BotUtils::getSportsFieldInfoList();
 
         /** @var SportsFieldInfo $sportsFieldInfo */
         foreach ($sportsFieldInfoList as $sportsFieldInfo) {
@@ -58,7 +51,7 @@ class LocationMessageHandler implements EventHandlerInterface
             return $a->Distance <=> $b->Distance;
         });
 
-        $result = array_slice($sportsFieldInfoList, 0, 5);
+        $result = array_slice($sportsFieldInfoList, 0, $AMOUNT_OF_FIELD);
         $result = array_filter($result, function ($sportField) use ($MAX_DISTANCE) {
             return $sportField->Distance < $MAX_DISTANCE;
         });

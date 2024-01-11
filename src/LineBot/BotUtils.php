@@ -34,4 +34,15 @@ class BotUtils
 
         return self::createMessageReplyRequest($replyToken, [$textMessage]);
     }
+
+    public static function getSportsFieldInfoList(): array
+    {
+        $sportsFieldInfoListFile = __DIR__ . '/../../data/sportsFieldInfoList.json';
+
+        if (!file_exists($sportsFieldInfoListFile)) {
+            include_once __DIR__ . '/../../scripts/fetchSportsFieldInfoList.php';
+        }
+
+        return json_decode(file_get_contents($sportsFieldInfoListFile));
+    }
 }
