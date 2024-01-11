@@ -11,6 +11,7 @@ use LINE\Clients\MessagingApi\Model\FlexImage;
 use LINE\Clients\MessagingApi\Model\FlexMessage;
 use LINE\Clients\MessagingApi\Model\FlexText;
 use LINE\Clients\MessagingApi\Model\MessageAction;
+use LINE\Clients\MessagingApi\Model\PostbackAction;
 use LINE\Constants\ActionType;
 use LINE\Constants\Flex\BubbleContainerSize;
 use LINE\Constants\Flex\ComponentAlign;
@@ -59,11 +60,16 @@ class FlexSampleSportsField
                     'size' => BubbleContainerSize::MICRO,
                     'hero' => self::createHeroBlock($sportsFieldInfo),
                     'body' => self::createBodyBlock($sportsFieldInfo),
-                    'action' => new MessageAction([
-                        'type' => ActionType::MESSAGE,
+                    'action' => new PostbackAction([
+                        'type' => ActionType::POSTBACK,
                         'label' => 'action',
-                        'text' => 'go ' . $sportsFieldInfo->Name,
+                        'data' => 'GymID=' . $sportsFieldInfo->GymID,
                     ]),
+                    // 'action' => new MessageAction([
+                    //     'type' => ActionType::MESSAGE,
+                    //     'label' => 'action',
+                    //     'text' => 'go ' . $sportsFieldInfo->Name,
+                    // ]),
                 ])
             );
         }
