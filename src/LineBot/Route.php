@@ -7,11 +7,13 @@ use LINE\Constants\HTTPHeader;
 use LINE\Parser\EventRequestParser;
 use LINE\Parser\Exception\InvalidEventRequestException;
 use LINE\Parser\Exception\InvalidSignatureException;
+use LINE\Webhook\Model\LocationMessageContent;
 use LINE\Webhook\Model\MessageEvent;
 use LINE\Webhook\Model\TextMessageContent;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Lynk\LineBot\EventHandler\EventHandlerInterface;
+use Lynk\LineBot\EventHandler\MessageHandler\LocationMessageHandler;
 use Lynk\LineBot\EventHandler\MessageHandler\TextMessageHandler;
 
 class Route
@@ -29,7 +31,9 @@ class Route
                 return $res->withStatus(400, 'Bad Request');
             }
 
-            // Check request with signature and parse request
+            /**
+             * Check request with signature and parse request
+             */
             try {
                 $secret = $this->get('settings')['bot']['channelSecret'];
                 $parsedEvents = EventRequestParser::parseEventRequest($req->getBody(), $secret, $signature[0]);
@@ -39,6 +43,9 @@ class Route
                 return $res->withStatus(400, "Invalid event request");
             }
 
+            /**
+             * handle different types of events
+             */
             foreach ($parsedEvents->getEvents() as $event) {
                 /** @var EventHandlerInterface $handler */
                 $handler = null;
@@ -47,6 +54,8 @@ class Route
                     $message = $event->getMessage();
                     if ($message instanceof TextMessageContent) {
                         $handler = new TextMessageHandler($bot, $logger, $req, $event);
+                    } else if ($message instanceof LocationMessageContent) {
+                        $handler = new LocationMessageHandler($bot, $logger, $event);
                     }
                 }
 

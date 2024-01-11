@@ -9,17 +9,16 @@ namespace Lynk\LineBot\Model;
  * @property string $Name
  * @property string $OperationTel
  * @property string $Address
- * @property int $Rate 
+ * @property float $Rate 
  * @property int $RateCount
- * @property int $Distance 
+ * @property float $Distance 
  * @property string $GymFuncList
  * @property string $Photo1 
  * @property string $LatLng 
  * @property string $RentState 
  * @property string $OpenState 
- * @property string $Declaration
+ * @property string|null $Declaration
  * @property string|null $LandAttrName
- * @property float|null  $distance 
  */
 class SportsFieldInfo
 {
