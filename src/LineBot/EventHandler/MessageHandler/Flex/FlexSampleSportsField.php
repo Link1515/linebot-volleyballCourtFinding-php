@@ -64,12 +64,8 @@ class FlexSampleSportsField
                         'type' => ActionType::POSTBACK,
                         'label' => 'action',
                         'data' => 'GymID=' . $sportsFieldInfo->GymID,
+                        'displayText' => $sportsFieldInfo->Name
                     ]),
-                    // 'action' => new MessageAction([
-                    //     'type' => ActionType::MESSAGE,
-                    //     'label' => 'action',
-                    //     'text' => 'go ' . $sportsFieldInfo->Name,
-                    // ]),
                 ])
             );
         }
