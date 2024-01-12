@@ -15,6 +15,13 @@ if (!is_dir($dirPath)) {
     mkdir($dirPath);
 }
 
-file_put_contents($dirPath . '/' . $filename, $res->getBody()->getContents());
+$resData = json_decode($res->getBody()->getContents(), true);
+
+$filteredData = array_filter($resData, function ($data) {
+    return $data['OpenState'] !== 'N' && $data['RentState'] !== '不開放對外場地租借';
+});
+$filteredData = array_values($filteredData);
+
+file_put_contents($dirPath . '/' . $filename, json_encode($filteredData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 
 echo 'ok';
