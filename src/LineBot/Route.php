@@ -7,10 +7,12 @@ use LINE\Constants\HTTPHeader;
 use LINE\Parser\EventRequestParser;
 use LINE\Parser\Exception\InvalidEventRequestException;
 use LINE\Parser\Exception\InvalidSignatureException;
+use LINE\Webhook\Model\FollowEvent;
 use LINE\Webhook\Model\LocationMessageContent;
 use LINE\Webhook\Model\MessageEvent;
 use LINE\Webhook\Model\PostbackEvent;
 use LINE\Webhook\Model\TextMessageContent;
+use Lynk\LineBot\EventHandler\FollowEventHandler;
 use Lynk\LineBot\EventHandler\PostbackEventHandler;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -61,6 +63,8 @@ class Route
                     }
                 } else if ($event instanceof PostbackEvent) {
                     $handler = new PostbackEventHandler($bot, $logger, $event);
+                } else if ($event instanceof FollowEvent) {
+                    $handler = new FollowEventHandler($bot, $logger, $event);
                 }
 
                 $handler->handle();

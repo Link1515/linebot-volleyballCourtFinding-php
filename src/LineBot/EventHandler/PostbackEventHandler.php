@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Lynk\LineBot\EventHandler;
 
 use LINE\Clients\MessagingApi\Api\MessagingApiApi;
-use LINE\Clients\MessagingApi\Model\ImageMessage;
 use LINE\Clients\MessagingApi\Model\LocationMessage;
 use LINE\Clients\MessagingApi\Model\Message;
 use LINE\Clients\MessagingApi\Model\TextMessage;
