@@ -81,7 +81,7 @@ class FlexSampleSportsField
     {
         return new FlexImage([
             'type' => ComponentType::IMAGE,
-            'url' => $sportsFieldInfo->Photo1,
+            'url' => self::encodeUrlPath($sportsFieldInfo->Photo1),
             'size' => ComponentImageSize::FULL,
             'aspectRatio' => '320:213',
             'aspectMode' => ComponentImageAspectMode::COVER,
@@ -129,7 +129,7 @@ class FlexSampleSportsField
                                     'text' => '📍' . $sportsFieldInfo->Address,
                                     'size' => ComponentFontSize::SM,
                                     'flex' => 5,
-                                    'warp' => true,
+                                    'wrap' => true,
                                     'color' => '#8c8c8c'
                                 ])
                             ]
@@ -138,5 +138,22 @@ class FlexSampleSportsField
                 ])
             ],
         ]);
+    }
+
+    private static function encodeUrlPath(string $url): string
+    {
+        $parsedUrl = parse_url($url);
+
+        $pathArray = [];
+        if (array_key_exists('path', $parsedUrl)) {
+            $pathArray = explode('/', $parsedUrl['path']);
+            foreach ($pathArray as &$path) {
+                $path = urlencode($path);
+            }
+        }
+
+        $encodedUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . implode('/', $pathArray);
+
+        return $encodedUrl;
     }
 }
