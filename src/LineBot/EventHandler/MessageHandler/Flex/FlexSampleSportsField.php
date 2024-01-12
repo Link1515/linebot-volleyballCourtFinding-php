@@ -10,7 +10,6 @@ use LINE\Clients\MessagingApi\Model\FlexComponent;
 use LINE\Clients\MessagingApi\Model\FlexImage;
 use LINE\Clients\MessagingApi\Model\FlexMessage;
 use LINE\Clients\MessagingApi\Model\FlexText;
-use LINE\Clients\MessagingApi\Model\MessageAction;
 use LINE\Clients\MessagingApi\Model\PostbackAction;
 use LINE\Constants\ActionType;
 use LINE\Constants\Flex\BubbleContainerSize;
@@ -24,6 +23,7 @@ use LINE\Constants\Flex\ComponentSpacing;
 use LINE\Constants\Flex\ComponentType;
 use LINE\Constants\Flex\ContainerType;
 use LINE\Constants\MessageType;
+use Lynk\LineBot\BotUtils;
 use Lynk\LineBot\Model\SportsFieldInfo;
 
 class FlexSampleSportsField
@@ -81,7 +81,7 @@ class FlexSampleSportsField
     {
         return new FlexImage([
             'type' => ComponentType::IMAGE,
-            'url' => self::encodeUrlPath($sportsFieldInfo->Photo1),
+            'url' => BotUtils::encodeUrlPath($sportsFieldInfo->Photo1),
             'size' => ComponentImageSize::FULL,
             'aspectRatio' => '320:213',
             'aspectMode' => ComponentImageAspectMode::COVER,
@@ -138,22 +138,5 @@ class FlexSampleSportsField
                 ])
             ],
         ]);
-    }
-
-    private static function encodeUrlPath(string $url): string
-    {
-        $parsedUrl = parse_url($url);
-
-        $pathArray = [];
-        if (array_key_exists('path', $parsedUrl)) {
-            $pathArray = explode('/', $parsedUrl['path']);
-            foreach ($pathArray as &$path) {
-                $path = urlencode($path);
-            }
-        }
-
-        $encodedUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . implode('/', $pathArray);
-
-        return $encodedUrl;
     }
 }

@@ -45,4 +45,21 @@ class BotUtils
 
         return json_decode(file_get_contents($sportsFieldInfoListFile));
     }
+
+    public static function encodeUrlPath(string $url): string
+    {
+        $parsedUrl = parse_url($url);
+
+        $pathArray = [];
+        if (array_key_exists('path', $parsedUrl)) {
+            $pathArray = explode('/', $parsedUrl['path']);
+            foreach ($pathArray as &$path) {
+                $path = urlencode($path);
+            }
+        }
+
+        $encodedUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . implode('/', $pathArray);
+
+        return $encodedUrl;
+    }
 }
