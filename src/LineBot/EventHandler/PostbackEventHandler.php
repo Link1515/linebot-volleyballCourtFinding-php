@@ -39,10 +39,10 @@ class PostbackEventHandler implements EventHandlerInterface
             if ($sportsFieldInfo->GymID === $GymID) {
                 $city = mb_substr($sportsFieldInfo->Address, 0, 3);
                 $weacherMsg = $this->getWeatherMsg($city);
-                $sportsFieldMsgList = $this->getSportsFieldMsgList($GymID);
+                // $sportsFieldMsgList = $this->getSportsFieldMsgList($GymID);
 
                 $botRequest = BotUtils::createMessageReplyRequest($this->event->getReplyToken(), [
-                    ...$sportsFieldMsgList,
+                    // ...$sportsFieldMsgList,
                     new LocationMessage([
                         'type' => MessageType::LOCATION,
                         'title' => $sportsFieldInfo->Name,
