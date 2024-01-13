@@ -110,7 +110,7 @@ class FlexSampleSportsField
                 ]),
                 new FlexText([
                     'type' => ComponentType::TEXT,
-                    'text' => '距離: 約' . $sportsFieldInfo->Distance . '公里',
+                    'text' => '距離: 約 ' . self::formatDistance($sportsFieldInfo->Distance),
                     'weight' => ComponentFontWeight::BOLD,
                     'size' => '12px',
                     'align' => ComponentAlign::CENTER,
@@ -138,5 +138,10 @@ class FlexSampleSportsField
                 ])
             ],
         ]);
+    }
+
+    private static function formatDistance(float $distance): string
+    {
+        return $distance >= 1 ? $distance . ' 公里' : $distance * 1000 . ' 公尺';
     }
 }
