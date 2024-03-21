@@ -1,6 +1,6 @@
 # 超級排 🏐 球場 line 機器人
 
-由原本 [typescript 專案](https://github.com/Link1515/linebot-volleyballCourtFinding) 改寫為 php
+[typescript 版本](https://github.com/Link1515/linebot-volleyballCourtFinding)
 
 <a href="https://lin.ee/nncjtFd"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友" height="36" border="0"></a>
 
