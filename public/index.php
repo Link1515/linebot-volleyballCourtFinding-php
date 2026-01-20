@@ -15,14 +15,14 @@ if ($isProduction) {
     $containerBuilder->enableCompilation(__DIR__ . '/../var/cache/php-di');
 }
 
-$containerBuilder->addDefinitions(__DIR__ . '/../config/definitions.php');
+$containerBuilder->addDefinitions(__DIR__ . '/../app/dependencies.php');
 
 $container = $containerBuilder->build();
 
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 
-(require __DIR__ . '/../config/middlewares.php')($app);
-(require __DIR__ . '/../config/routes.php')($app);
+(require __DIR__ . '/../app/middlewares.php')($app);
+(require __DIR__ . '/../app/routes.php')($app);
 
 $app->run();
