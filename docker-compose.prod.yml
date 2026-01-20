@@ -1,0 +1,18 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    env_file: .env
+    working_dir: /var/www/html
+    expose:
+      - '9000'
+
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    ports:
+      - '3000:80'
+    depends_on:
+      - php
