@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Lynk\LineBot\EventHandler\MessageHandler;
+namespace TerryLin\LineBot\EventHandler\MessageHandler;
 
 use LINE\Clients\MessagingApi\Api\MessagingApiApi;
 use LINE\Clients\MessagingApi\ApiException;
@@ -10,11 +10,11 @@ use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Constants\MessageType;
 use LINE\Webhook\Model\LocationMessageContent;
 use LINE\Webhook\Model\MessageEvent;
-use Lynk\LineBot\BotUtils;
-use Lynk\LineBot\EventHandler\EventHandlerInterface;
-use Lynk\LineBot\EventHandler\MessageHandler\Flex\FlexSampleSportsField;
-use Lynk\LineBot\Model\SportsFieldInfo;
 use Psr\Log\LoggerInterface;
+use TerryLin\LineBot\BotUtils;
+use TerryLin\LineBot\EventHandler\EventHandlerInterface;
+use TerryLin\LineBot\EventHandler\MessageHandler\Flex\FlexSampleSportsField;
+use TerryLin\LineBot\Model\SportsFieldInfo;
 
 class LocationMessageHandler implements EventHandlerInterface
 {

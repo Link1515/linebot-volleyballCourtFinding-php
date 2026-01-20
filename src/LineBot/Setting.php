@@ -1,6 +1,6 @@
 <?php
 
-namespace Lynk\LineBot;
+namespace TerryLin\LineBot;
 
 class Setting
 {

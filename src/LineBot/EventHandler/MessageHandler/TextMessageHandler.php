@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Lynk\LineBot\EventHandler\MessageHandler;
+namespace TerryLin\LineBot\EventHandler\MessageHandler;
 
 use LINE\Clients\MessagingApi\Api\MessagingApiApi;
 use LINE\Clients\MessagingApi\ApiException;
@@ -14,10 +14,10 @@ use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Constants\ActionType;
 use LINE\Constants\MessageType;
 use LINE\Webhook\Model\MessageEvent;
-use Lynk\LineBot\BotUtils;
-use Lynk\LineBot\EventHandler\EventHandlerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
+use TerryLin\LineBot\BotUtils;
+use TerryLin\LineBot\EventHandler\EventHandlerInterface;
 
 class TextMessageHandler implements EventHandlerInterface
 {

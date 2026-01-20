@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Lynk\LineBot;
+namespace TerryLin\LineBot;
 
 use LINE\Clients\MessagingApi\Api\MessagingApiApi;
 use LINE\Clients\MessagingApi\ApiException;

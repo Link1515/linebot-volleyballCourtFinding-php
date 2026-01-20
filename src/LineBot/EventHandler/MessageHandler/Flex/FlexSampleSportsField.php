@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Lynk\LineBot\EventHandler\MessageHandler\Flex;
+namespace TerryLin\LineBot\EventHandler\MessageHandler\Flex;
 
 use LINE\Clients\MessagingApi\Model\FlexBox;
 use LINE\Clients\MessagingApi\Model\FlexBubble;
@@ -23,8 +23,8 @@ use LINE\Constants\Flex\ComponentSpacing;
 use LINE\Constants\Flex\ComponentType;
 use LINE\Constants\Flex\ContainerType;
 use LINE\Constants\MessageType;
-use Lynk\LineBot\BotUtils;
-use Lynk\LineBot\Model\SportsFieldInfo;
+use TerryLin\LineBot\BotUtils;
+use TerryLin\LineBot\Model\SportsFieldInfo;
 
 class FlexSampleSportsField
 {

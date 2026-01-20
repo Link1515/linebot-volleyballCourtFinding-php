@@ -1,6 +1,6 @@
 <?php
 
-namespace Lynk\LineBot;
+namespace TerryLin\LineBot;
 
 use LINE\Clients\MessagingApi\Api\MessagingApiApi;
 use LINE\Constants\HTTPHeader;
@@ -13,14 +13,14 @@ use LINE\Webhook\Model\LocationMessageContent;
 use LINE\Webhook\Model\MessageEvent;
 use LINE\Webhook\Model\PostbackEvent;
 use LINE\Webhook\Model\TextMessageContent;
-use Lynk\LineBot\EventHandler\EventHandlerInterface;
-use Lynk\LineBot\EventHandler\FollowEventHandler;
-use Lynk\LineBot\EventHandler\JoinEventHandler;
-use Lynk\LineBot\EventHandler\MessageHandler\LocationMessageHandler;
-use Lynk\LineBot\EventHandler\MessageHandler\TextMessageHandler;
-use Lynk\LineBot\EventHandler\PostbackEventHandler;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use TerryLin\LineBot\EventHandler\EventHandlerInterface;
+use TerryLin\LineBot\EventHandler\FollowEventHandler;
+use TerryLin\LineBot\EventHandler\JoinEventHandler;
+use TerryLin\LineBot\EventHandler\MessageHandler\LocationMessageHandler;
+use TerryLin\LineBot\EventHandler\MessageHandler\TextMessageHandler;
+use TerryLin\LineBot\EventHandler\PostbackEventHandler;
 
 class Route
 {

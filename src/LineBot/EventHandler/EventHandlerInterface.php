@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Lynk\LineBot\EventHandler;
+namespace TerryLin\LineBot\EventHandler;
 
 interface EventHandlerInterface
 {

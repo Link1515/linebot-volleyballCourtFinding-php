@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Lynk\LineBot\Model;
+namespace TerryLin\LineBot\Model;
 
 /**
  * @property int $GymID

@@ -2,8 +2,8 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Lynk\LineBot\Dependency;
-use Lynk\LineBot\Route;
+use TerryLin\LineBot\Dependency;
+use TerryLin\LineBot\Route;
 
 Dotenv\Dotenv::createImmutable(__DIR__ . '/../')->load();
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Lynk\LineBot;
+namespace TerryLin\LineBot;
 
 use DI\Container;
 use GuzzleHttp\Client;

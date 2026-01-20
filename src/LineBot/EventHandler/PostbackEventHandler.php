@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Lynk\LineBot\EventHandler;
+namespace TerryLin\LineBot\EventHandler;
 
 use GuzzleHttp\Client;
 use LINE\Clients\MessagingApi\Api\MessagingApiApi;
@@ -11,9 +11,9 @@ use LINE\Clients\MessagingApi\Model\Message;
 use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Constants\MessageType;
 use LINE\Webhook\Model\PostbackEvent;
-use Lynk\LineBot\BotUtils;
-use Lynk\LineBot\Model\SportsFieldInfo;
 use Psr\Log\LoggerInterface;
+use TerryLin\LineBot\BotUtils;
+use TerryLin\LineBot\Model\SportsFieldInfo;
 
 class PostbackEventHandler implements EventHandlerInterface
 {

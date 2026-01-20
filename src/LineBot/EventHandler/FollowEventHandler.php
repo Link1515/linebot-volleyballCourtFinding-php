@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Lynk\LineBot\EventHandler;
+namespace TerryLin\LineBot\EventHandler;
 
 use LINE\Clients\MessagingApi\Api\MessagingApiApi;
 use LINE\Webhook\Model\FollowEvent;
 use LINE\Webhook\Model\PostbackEvent;
-use Lynk\LineBot\BotUtils;
 use Psr\Log\LoggerInterface;
+use TerryLin\LineBot\BotUtils;
 
 class FollowEventHandler implements EventHandlerInterface
 {

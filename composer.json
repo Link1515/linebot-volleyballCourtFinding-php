@@ -31,7 +31,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Lynk\\": "src/"
+      "TerryLin\\": "src/"
     }
   },
   "require-dev": {
