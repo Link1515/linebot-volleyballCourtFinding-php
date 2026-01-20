@@ -22,6 +22,7 @@ $container = $containerBuilder->build();
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 
+(require __DIR__ . '/../config/middlewares.php')($app);
 (require __DIR__ . '/../config/routes.php')($app);
 
 $app->run();
