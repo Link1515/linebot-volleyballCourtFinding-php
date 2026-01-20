@@ -1,6 +1,5 @@
-!/logs/.gitkeep
-/logs/*
+storage/data/*
+storage/logs/*
 vendor
 .env
-/data/sportsFieldInfoList.json
 .php-cs-fixer.cache

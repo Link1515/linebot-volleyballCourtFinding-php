@@ -1,3 +1,5 @@
 .git
 vendor
-*.log
+storage/data/*
+storage/logs/*
+.php-cs-fixer.cache

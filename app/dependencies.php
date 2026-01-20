@@ -16,7 +16,7 @@ return [
         return new Settings([
             'logger' => [
                 'name' => 'slim-app',
-                'path' => __DIR__ . '/../logs/app.log',
+                'path' => __DIR__ . '/../storage/logs/app.log',
             ],
 
             'bot' => [

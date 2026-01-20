@@ -37,7 +37,7 @@ class BotUtils
 
     public static function getSportsFieldInfoList(): array
     {
-        $sportsFieldInfoListFile = __DIR__ . '/../../data/sportsFieldInfoList.json';
+        $sportsFieldInfoListFile = __DIR__ . '/../../storage/data/sportsFieldInfoList.json';
 
         if (!file_exists($sportsFieldInfoListFile)) {
             include_once __DIR__ . '/../../scripts/fetchSportsFieldInfoList.php';
