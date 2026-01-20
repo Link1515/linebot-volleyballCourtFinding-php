@@ -26,7 +26,12 @@ class Route
 {
     public function register(\Slim\App $app)
     {
-        $app->post('/callback', function (RequestInterface $req, ResponseInterface $res) {
+        $app->post('/webhook', function (RequestInterface $req, ResponseInterface $res) {
+            // send response immediately by fastcgi_finish_request
+            if (function_exists('fastcgi_finish_request')) {
+                fastcgi_finish_request();
+            }
+
             /** @var \LINE\Clients\MessagingApi\Api\MessagingApiApi $bot */
             $bot = $this->get(MessagingApiApi::class);
             /** @var \Psr\Log\LoggerInterface $logger */
