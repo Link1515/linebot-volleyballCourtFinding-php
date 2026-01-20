@@ -2,15 +2,26 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use TerryLin\LineBot\Dependency;
-use TerryLin\LineBot\Route;
+use DI\ContainerBuilder;
+use Dotenv\Dotenv;
+use Slim\Factory\AppFactory;
 
-Dotenv\Dotenv::createImmutable(__DIR__ . '/../')->load();
+Dotenv::createImmutable(__DIR__ . '/../')->load();
 
-$container = new \DI\Container();
-(new Dependency())->register($container);
+$containerBuilder = new ContainerBuilder();
 
-$app = \Slim\Factory\AppFactory::createFromContainer($container);
-(new Route())->register($app);
+$isProduction = $_ENV['APP_ENV'] === 'production';
+if ($isProduction) {
+    $containerBuilder->enableCompilation(__DIR__ . '/../var/cache/php-di');
+}
+
+$containerBuilder->addDefinitions(__DIR__ . '/../config/definitions.php');
+
+$container = $containerBuilder->build();
+
+AppFactory::setContainer($container);
+$app = AppFactory::create();
+
+(require __DIR__ . '/../config/routes.php')($app);
 
 $app->run();
