@@ -35,10 +35,10 @@ class FlexSampleSportsField
     public static function get(array $sportsFieldInfoList): FlexMessage
     {
         return new FlexMessage([
-            'type' => MessageType::FLEX,
-            'altText' => '距離您最近的球場',
+            'type'     => MessageType::FLEX,
+            'altText'  => '距離您最近的球場',
             'contents' => [
-                'type' => ContainerType::CAROUSEL,
+                'type'     => ContainerType::CAROUSEL,
                 'contents' => self::createBubbles($sportsFieldInfoList),
             ]
         ]);
@@ -56,14 +56,14 @@ class FlexSampleSportsField
             array_push(
                 $bubbles,
                 new FlexBubble([
-                    'type' => ContainerType::BUBBLE,
-                    'size' => BubbleContainerSize::MICRO,
-                    'hero' => self::createHeroBlock($sportsFieldInfo),
-                    'body' => self::createBodyBlock($sportsFieldInfo),
+                    'type'   => ContainerType::BUBBLE,
+                    'size'   => BubbleContainerSize::MICRO,
+                    'hero'   => self::createHeroBlock($sportsFieldInfo),
+                    'body'   => self::createBodyBlock($sportsFieldInfo),
                     'action' => new PostbackAction([
-                        'type' => ActionType::POSTBACK,
-                        'label' => 'action',
-                        'data' => 'GymID=' . $sportsFieldInfo->GymID,
+                        'type'        => ActionType::POSTBACK,
+                        'label'       => 'action',
+                        'data'        => 'GymID=' . $sportsFieldInfo->GymID,
                         'displayText' => $sportsFieldInfo->Name
                     ]),
                 ])
@@ -80,11 +80,11 @@ class FlexSampleSportsField
     private static function createHeroBlock($sportsFieldInfo): FlexComponent
     {
         return new FlexImage([
-            'type' => ComponentType::IMAGE,
-            'url' => BotUtils::encodeUrlPath($sportsFieldInfo->Photo1),
-            'size' => ComponentImageSize::FULL,
+            'type'        => ComponentType::IMAGE,
+            'url'         => BotUtils::encodeUrlPath($sportsFieldInfo->Photo1),
+            'size'        => ComponentImageSize::FULL,
             'aspectRatio' => '320:213',
-            'aspectMode' => ComponentImageAspectMode::COVER,
+            'aspectMode'  => ComponentImageAspectMode::COVER,
         ]);
     }
 
@@ -95,41 +95,41 @@ class FlexSampleSportsField
     private static function createBodyBlock($sportsFieldInfo): FlexBox
     {
         return new FlexBox([
-            'type' => ComponentType::BOX,
-            'layout' => ComponentLayout::VERTICAL,
-            'spacing' => ComponentSpacing::SM,
+            'type'       => ComponentType::BOX,
+            'layout'     => ComponentLayout::VERTICAL,
+            'spacing'    => ComponentSpacing::SM,
             'paddingAll' => '13px',
-            'contents' => [
+            'contents'   => [
                 new FlexText([
-                    'type' => ComponentType::TEXT,
-                    'text' => $sportsFieldInfo->Name,
+                    'type'   => ComponentType::TEXT,
+                    'text'   => $sportsFieldInfo->Name,
                     'weight' => ComponentFontWeight::BOLD,
-                    'size' => ComponentFontSize::SM,
-                    'align' => ComponentAlign::CENTER,
-                    'wrap' => true,
+                    'size'   => ComponentFontSize::SM,
+                    'align'  => ComponentAlign::CENTER,
+                    'wrap'   => true,
                 ]),
                 new FlexText([
-                    'type' => ComponentType::TEXT,
-                    'text' => '距離: 約 ' . self::formatDistance($sportsFieldInfo->Distance),
+                    'type'   => ComponentType::TEXT,
+                    'text'   => '距離: 約 ' . self::formatDistance($sportsFieldInfo->Distance),
                     'weight' => ComponentFontWeight::BOLD,
-                    'size' => '12px',
-                    'align' => ComponentAlign::CENTER,
+                    'size'   => '12px',
+                    'align'  => ComponentAlign::CENTER,
                 ]),
                 new FlexBox([
-                    'type' => ComponentType::BOX,
-                    'layout' => ComponentLayout::VERTICAL,
+                    'type'     => ComponentType::BOX,
+                    'layout'   => ComponentLayout::VERTICAL,
                     'contents' => [
                         new FlexBox([
-                            'type' => ComponentType::BOX,
-                            'layout' => ComponentLayout::BASELINE,
-                            'spacing' => ComponentSpacing::SM,
+                            'type'     => ComponentType::BOX,
+                            'layout'   => ComponentLayout::BASELINE,
+                            'spacing'  => ComponentSpacing::SM,
                             'contents' => [
                                 new FlexText([
-                                    'type' => 'text',
-                                    'text' => '📍' . $sportsFieldInfo->Address,
-                                    'size' => ComponentFontSize::SM,
-                                    'flex' => 5,
-                                    'wrap' => true,
+                                    'type'  => 'text',
+                                    'text'  => '📍' . $sportsFieldInfo->Address,
+                                    'size'  => ComponentFontSize::SM,
+                                    'flex'  => 5,
+                                    'wrap'  => true,
                                     'color' => '#8c8c8c'
                                 ])
                             ]

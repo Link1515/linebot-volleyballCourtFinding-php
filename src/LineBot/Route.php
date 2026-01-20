@@ -13,14 +13,14 @@ use LINE\Webhook\Model\LocationMessageContent;
 use LINE\Webhook\Model\MessageEvent;
 use LINE\Webhook\Model\PostbackEvent;
 use LINE\Webhook\Model\TextMessageContent;
+use Lynk\LineBot\EventHandler\EventHandlerInterface;
 use Lynk\LineBot\EventHandler\FollowEventHandler;
 use Lynk\LineBot\EventHandler\JoinEventHandler;
+use Lynk\LineBot\EventHandler\MessageHandler\LocationMessageHandler;
+use Lynk\LineBot\EventHandler\MessageHandler\TextMessageHandler;
 use Lynk\LineBot\EventHandler\PostbackEventHandler;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Lynk\LineBot\EventHandler\EventHandlerInterface;
-use Lynk\LineBot\EventHandler\MessageHandler\LocationMessageHandler;
-use Lynk\LineBot\EventHandler\MessageHandler\TextMessageHandler;
 
 class Route
 {
@@ -46,8 +46,9 @@ class Route
              * Check request with signature and parse request
              */
             try {
-                $secret = $this->get('settings')['bot']['channelSecret'];
-                $parsedEvents = EventRequestParser::parseEventRequest($req->getBody(), $secret, $signature[0]);
+                $secret       = $this->get('settings')['bot']['channelSecret'];
+                $body         = $req->getBody()->getContents();
+                $parsedEvents = EventRequestParser::parseEventRequest($body, $secret, $signature[0]);
             } catch (InvalidSignatureException $e) {
                 return $res->withStatus(400, 'Invalid signature');
             } catch (InvalidEventRequestException $e) {
@@ -65,20 +66,19 @@ class Route
                     $message = $event->getMessage();
                     if ($message instanceof TextMessageContent) {
                         $handler = new TextMessageHandler($bot, $logger, $req, $event);
-                    } else if ($message instanceof LocationMessageContent) {
+                    } elseif ($message instanceof LocationMessageContent) {
                         $handler = new LocationMessageHandler($bot, $logger, $event);
                     }
-                } else if ($event instanceof PostbackEvent) {
+                } elseif ($event instanceof PostbackEvent) {
                     $handler = new PostbackEventHandler($bot, $logger, $event);
-                } else if ($event instanceof FollowEvent) {
+                } elseif ($event instanceof FollowEvent) {
                     $handler = new FollowEventHandler($bot, $logger, $event);
-                } else if ($event instanceof JoinEvent) {
+                } elseif ($event instanceof JoinEvent) {
                     $handler = new JoinEventHandler($bot, $logger, $event);
                 }
 
                 $handler->handle();
             }
-
 
             $res->withStatus(200, 'OK');
             return $res;

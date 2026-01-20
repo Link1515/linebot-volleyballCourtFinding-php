@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Lynk\LineBot\EventHandler;
 
+use GuzzleHttp\Client;
 use LINE\Clients\MessagingApi\Api\MessagingApiApi;
 use LINE\Clients\MessagingApi\Model\LocationMessage;
 use LINE\Clients\MessagingApi\Model\Message;
@@ -13,7 +14,6 @@ use LINE\Webhook\Model\PostbackEvent;
 use Lynk\LineBot\BotUtils;
 use Lynk\LineBot\Model\SportsFieldInfo;
 use Psr\Log\LoggerInterface;
-use GuzzleHttp\Client;
 
 class PostbackEventHandler implements EventHandlerInterface
 {
@@ -37,17 +37,17 @@ class PostbackEventHandler implements EventHandlerInterface
         /** @var SportsFieldInfo $sportsFieldInfo */
         foreach ($sportsFieldInfoList as $sportsFieldInfo) {
             if ($sportsFieldInfo->GymID === $GymID) {
-                $city = mb_substr($sportsFieldInfo->Address, 0, 3);
+                $city       = mb_substr($sportsFieldInfo->Address, 0, 3);
                 $weacherMsg = $this->getWeatherMsg($city);
                 // $sportsFieldMsgList = $this->getSportsFieldMsgList($GymID);
 
                 $botRequest = BotUtils::createMessageReplyRequest($this->event->getReplyToken(), [
                     // ...$sportsFieldMsgList,
                     new LocationMessage([
-                        'type' => MessageType::LOCATION,
-                        'title' => $sportsFieldInfo->Name,
-                        'address' => $sportsFieldInfo->Address,
-                        'latitude' => (float) explode(',', $sportsFieldInfo->LatLng)[0],
+                        'type'      => MessageType::LOCATION,
+                        'title'     => $sportsFieldInfo->Name,
+                        'address'   => $sportsFieldInfo->Address,
+                        'latitude'  => (float) explode(',', $sportsFieldInfo->LatLng)[0],
                         'longitude' => (float) explode(',', $sportsFieldInfo->LatLng)[1],
                     ]),
                     $weacherMsg
@@ -62,7 +62,7 @@ class PostbackEventHandler implements EventHandlerInterface
 
     private function getSportsFieldMsgList(int $GymID): array
     {
-        $res = $this->httpClient->request('GET', 'https://iplay.sa.gov.tw/odata/Gym(' . $GymID . ')?$format=application/json;odata.metadata=none');
+        $res  = $this->httpClient->request('GET', 'https://iplay.sa.gov.tw/odata/Gym(' . $GymID . ')?$format=application/json;odata.metadata=none');
         $data = json_decode($res->getBody()->getContents(), true);
 
         // $image = BotUtils::encodeUrlPath($data['Photo1Url']);
@@ -86,12 +86,10 @@ class PostbackEventHandler implements EventHandlerInterface
                 'text' => $text,
             ])
         ];
-
     }
 
     private function getWeatherMsg(string $city): Message
     {
-
         $cityConvertList = ['彰化市', '嘉義市', '花蓮市'];
 
         if (in_array($city, $cityConvertList)) {
@@ -101,16 +99,16 @@ class PostbackEventHandler implements EventHandlerInterface
         $res = $this->httpClient->request('GET', 'https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001', [
             'query' => [
                 'Authorization' => $_ENV['WEATHER_API_KEY'],
-                'locationName' => $city
+                'locationName'  => $city
             ]
         ]);
         $weatherData = json_decode($res->getBody()->getContents(), true)['records']['location'][0]['weatherElement'];
 
-        $precipitation = (int) $weatherData[1]['time'][0]['parameter']['parameterName'];
+        $precipitation          = (int) $weatherData[1]['time'][0]['parameter']['parameterName'];
         $precipitationAlertIcon = $precipitation > 60 ? '⚠️' : '';
-        $minTemperature = $weatherData[2]['time'][0]['parameter']['parameterName'];
-        $discription = $weatherData[3]['time'][0]['parameter']['parameterName'];
-        $maxTemperature = $weatherData[4]['time'][0]['parameter']['parameterName'];
+        $minTemperature         = $weatherData[2]['time'][0]['parameter']['parameterName'];
+        $discription            = $weatherData[3]['time'][0]['parameter']['parameterName'];
+        $maxTemperature         = $weatherData[4]['time'][0]['parameter']['parameterName'];
 
         $text = <<<Text
         🌡{$city}今日{$discription}

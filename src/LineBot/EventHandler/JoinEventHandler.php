@@ -30,4 +30,3 @@ class JoinEventHandler implements EventHandlerInterface
         $this->bot->replyMessage($botRequest);
     }
 }
-

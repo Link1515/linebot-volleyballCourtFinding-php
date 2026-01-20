@@ -16,7 +16,7 @@ class Setting
                 ],
 
                 'bot' => [
-                    'channelToken' => $_ENV['LINEBOT_CHANNEL_TOKEN'] ?: '',
+                    'channelToken'  => $_ENV['LINEBOT_CHANNEL_TOKEN'] ?: '',
                     'channelSecret' => $_ENV['LINEBOT_CHANNEL_SECRET'] ?: '',
                 ],
             ],

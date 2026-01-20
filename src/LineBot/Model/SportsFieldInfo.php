@@ -9,14 +9,14 @@ namespace Lynk\LineBot\Model;
  * @property string $Name
  * @property string $OperationTel
  * @property string $Address
- * @property float $Rate 
+ * @property float $Rate
  * @property int $RateCount
- * @property float $Distance 
+ * @property float $Distance
  * @property string $GymFuncList
- * @property string $Photo1 
- * @property string $LatLng 
- * @property string $RentState 
- * @property string $OpenState 
+ * @property string $Photo1
+ * @property string $LatLng
+ * @property string $RentState
+ * @property string $OpenState
  * @property string|null $Declaration
  * @property string|null $LandAttrName
  */

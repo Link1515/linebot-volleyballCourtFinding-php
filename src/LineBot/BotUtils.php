@@ -12,14 +12,14 @@ use LINE\Constants\MessageType;
 class BotUtils
 {
     /**
-     * @param string $replyToken 
+     * @param string $replyToken
      * @param Message[] $messages
      */
     public static function createMessageReplyRequest(string $replyToken, array $messages): ReplyMessageRequest
     {
         $botRequest = new ReplyMessageRequest([
             'replyToken' => $replyToken,
-            'messages' => $messages,
+            'messages'   => $messages,
         ]);
 
         return $botRequest;

@@ -8,8 +8,8 @@ use LINE\Clients\MessagingApi\Api\MessagingApiApi;
 use LINE\Clients\MessagingApi\ApiException;
 use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Constants\MessageType;
-use LINE\Webhook\Model\MessageEvent;
 use LINE\Webhook\Model\LocationMessageContent;
+use LINE\Webhook\Model\MessageEvent;
 use Lynk\LineBot\BotUtils;
 use Lynk\LineBot\EventHandler\EventHandlerInterface;
 use Lynk\LineBot\EventHandler\MessageHandler\Flex\FlexSampleSportsField;
@@ -24,14 +24,15 @@ class LocationMessageHandler implements EventHandlerInterface
         private readonly MessageEvent $event
     ) {
     }
+
     public function handle(): void
     {
         $AMOUNT_OF_FIELD = 5;
-        $MAX_DISTANCE = 15; // 15 km
+        $MAX_DISTANCE    = 15; // 15 km
 
         /** @var LocationMessageContent $locationMessage */
         $locationMessage = $this->event->getMessage();
-        $userLocation = [$locationMessage->getLatitude(), $locationMessage->getLongitude()];
+        $userLocation    = [$locationMessage->getLatitude(), $locationMessage->getLongitude()];
 
         $sportsFieldInfoList = BotUtils::getSportsFieldInfoList();
 
@@ -80,7 +81,6 @@ class LocationMessageHandler implements EventHandlerInterface
         }
     }
 
-
     /**
      * Calculates the distance between two locations based on their latitude and longitude.
      *
@@ -105,11 +105,11 @@ class LocationMessageHandler implements EventHandlerInterface
         if ($lat1 === $lat2 && $lon1 === $lon2) {
             return 0;
         } else {
-            $radlat1 = (pi() * $lat1) / 180;
-            $radlat2 = (pi() * $lat2) / 180;
-            $theta = $lon1 - $lon2;
+            $radlat1  = (pi() * $lat1) / 180;
+            $radlat2  = (pi() * $lat2) / 180;
+            $theta    = $lon1 - $lon2;
             $radtheta = (pi() * $theta) / 180;
-            $dist = sin($radlat1) * sin($radlat2) + cos($radlat1) * cos($radlat2) * cos($radtheta);
+            $dist     = sin($radlat1) * sin($radlat2) + cos($radlat1) * cos($radlat2) * cos($radtheta);
             if ($dist > 1) {
                 $dist = 1;
             }

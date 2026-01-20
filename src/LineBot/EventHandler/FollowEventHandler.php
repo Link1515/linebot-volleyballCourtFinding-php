@@ -29,4 +29,3 @@ class FollowEventHandler implements EventHandlerInterface
         $this->bot->replyMessage($botRequest);
     }
 }
-

@@ -31,16 +31,15 @@ class TextMessageHandler implements EventHandlerInterface
 
     public function handle(): void
     {
-        $text = $this->event->getMessage()->getText();
+        $text       = $this->event->getMessage()->getText();
         $replyToken = $this->event->getReplyToken();
 
         if ($text === '球場資訊') {
             $this->locationQuickReply($replyToken);
-        } else if ($text === '使用教學') {
+        } elseif ($text === '使用教學') {
             $this->sendTutorialMsg($replyToken);
         }
     }
-
 
     private function sendTutorialMsg(string $replyToken): void
     {
@@ -72,9 +71,9 @@ class TextMessageHandler implements EventHandlerInterface
         $quickReply = new QuickReply([
             'items' => [
                 new QuickReplyItem([
-                    'type' => 'action',
+                    'type'   => 'action',
                     'action' => new LocationAction([
-                        'type' => ActionType::LOCATION,
+                        'type'  => ActionType::LOCATION,
                         'label' => '傳送位置'
                     ])
                 ])
@@ -82,14 +81,14 @@ class TextMessageHandler implements EventHandlerInterface
         ]);
 
         $message = new TextMessage([
-            'type' => MessageType::TEXT,
-            'text' => '請點下方的按鈕，傳送您的位置',
+            'type'       => MessageType::TEXT,
+            'text'       => '請點下方的按鈕，傳送您的位置',
             'quickReply' => $quickReply
         ]);
 
         $botRequest = new ReplyMessageRequest([
             'replyToken' => $replyToken,
-            'messages' => [$message],
+            'messages'   => [$message],
         ]);
 
         try {
