@@ -20,7 +20,7 @@
   },
   "autoload": {
     "psr-4": {
-      "TerryLin\\": "src/"
+      "TerryLin\\LineBot\\": "src/"
     }
   },
   "require-dev": {
