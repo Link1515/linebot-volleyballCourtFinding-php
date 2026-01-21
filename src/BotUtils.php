@@ -4,40 +4,11 @@ declare(strict_types=1);
 
 namespace TerryLin\LineBot;
 
-use LINE\Clients\MessagingApi\Model\Message;
-use LINE\Clients\MessagingApi\Model\ReplyMessageRequest;
-use LINE\Clients\MessagingApi\Model\TextMessage;
-use LINE\Constants\MessageType;
-
 class BotUtils
 {
     private const COURTS_JSON_FILE    = __DIR__ . '/../storage/data/courts.json';
     private const FETCH_COURTS_SCRIPT = __DIR__ . '/../scripts/fetchCourts.php';
     private static $courst            = [];
-
-    /**
-     * @param string $replyToken
-     * @param Message[] $messages
-     */
-    public static function createMessageReplyRequest(string $replyToken, array $messages): ReplyMessageRequest
-    {
-        $botRequest = new ReplyMessageRequest([
-            'replyToken' => $replyToken,
-            'messages'   => $messages,
-        ]);
-
-        return $botRequest;
-    }
-
-    public static function createTextReplyRequest(string $replyToken, string $text): ReplyMessageRequest
-    {
-        $textMessage = new TextMessage([
-            'type' => MessageType::TEXT,
-            'text' => $text,
-        ]);
-
-        return self::createMessageReplyRequest($replyToken, [$textMessage]);
-    }
 
     public static function getCourts(): array
     {
