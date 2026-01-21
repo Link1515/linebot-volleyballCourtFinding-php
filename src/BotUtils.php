@@ -11,6 +11,10 @@ use LINE\Constants\MessageType;
 
 class BotUtils
 {
+    private const COURTS_JSON_FILE    = __DIR__ . '/../storage/data/courts.json';
+    private const FETCH_COURTS_SCRIPT = __DIR__ . '/../scripts/fetchCourts.php';
+    private static $courst            = [];
+
     /**
      * @param string $replyToken
      * @param Message[] $messages
@@ -37,13 +41,15 @@ class BotUtils
 
     public static function getCourts(): array
     {
-        $courtsFile = __DIR__ . '/../storage/data/courts.json';
+        if (empty(self::$courst)) {
+            if (!file_exists(self::COURTS_JSON_FILE)) {
+                include_once self::FETCH_COURTS_SCRIPT;
+            }
 
-        if (!file_exists($courtsFile)) {
-            include_once __DIR__ . '/../scripts/fetchCourts.php';
+            self::$courst = json_decode(file_get_contents(self::COURTS_JSON_FILE));
         }
 
-        return json_decode(file_get_contents($courtsFile));
+        return self::$courst;
     }
 
     public static function encodeUrlPath(string $url): string
