@@ -19,7 +19,7 @@ use Psr\Log\LoggerInterface;
 use TerryLin\LineBot\BotUtils;
 use TerryLin\LineBot\EventHandler\EventHandlerInterface;
 
-class TextMessageHandler implements EventHandlerInterface
+class TextHandler implements EventHandlerInterface
 {
     public function __construct(
         private readonly MessagingApiApi $bot,

@@ -19,11 +19,11 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
 use TerryLin\LineBot\EventHandler\EventHandlerInterface;
-use TerryLin\LineBot\EventHandler\FollowEventHandler;
-use TerryLin\LineBot\EventHandler\JoinEventHandler;
-use TerryLin\LineBot\EventHandler\MessageHandler\LocationMessageHandler;
-use TerryLin\LineBot\EventHandler\MessageHandler\TextMessageHandler;
-use TerryLin\LineBot\EventHandler\PostbackEventHandler;
+use TerryLin\LineBot\EventHandler\FollowHandler;
+use TerryLin\LineBot\EventHandler\JoinHandler;
+use TerryLin\LineBot\EventHandler\MessageHandler\LocationHandler;
+use TerryLin\LineBot\EventHandler\MessageHandler\TextHandler;
+use TerryLin\LineBot\EventHandler\PostbackHandler;
 use TerryLin\LineBot\Settings;
 
 class WebhookController
@@ -70,16 +70,16 @@ class WebhookController
             if ($event instanceof MessageEvent) {
                 $message = $event->getMessage();
                 if ($message instanceof TextMessageContent) {
-                    $handler = new TextMessageHandler($this->bot, $this->logger, $req, $event);
+                    $handler = new TextHandler($this->bot, $this->logger, $req, $event);
                 } elseif ($message instanceof LocationMessageContent) {
-                    $handler = new LocationMessageHandler($this->bot, $this->logger, $event);
+                    $handler = new LocationHandler($this->bot, $this->logger, $event);
                 }
             } elseif ($event instanceof PostbackEvent) {
-                $handler = new PostbackEventHandler($this->bot, $this->logger, $event);
+                $handler = new PostbackHandler($this->bot, $this->logger, $event);
             } elseif ($event instanceof FollowEvent) {
-                $handler = new FollowEventHandler($this->bot, $this->logger, $event);
+                $handler = new FollowHandler($this->bot, $this->logger, $event);
             } elseif ($event instanceof JoinEvent) {
-                $handler = new JoinEventHandler($this->bot, $this->logger, $event);
+                $handler = new JoinHandler($this->bot, $this->logger, $event);
             }
 
             $handler->handle();
@@ -87,6 +87,5 @@ class WebhookController
 
         $res->withStatus(200, 'OK');
         return $res;
-        return $response;
     }
 }

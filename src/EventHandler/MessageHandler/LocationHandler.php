@@ -16,7 +16,7 @@ use TerryLin\LineBot\EventHandler\EventHandlerInterface;
 use TerryLin\LineBot\EventHandler\MessageHandler\Flex\FlexSampleSportsField;
 use TerryLin\LineBot\Model\SportsFieldInfo;
 
-class LocationMessageHandler implements EventHandlerInterface
+class LocationHandler implements EventHandlerInterface
 {
     public function __construct(
         private readonly MessagingApiApi $bot,

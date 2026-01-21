@@ -15,7 +15,7 @@ use Psr\Log\LoggerInterface;
 use TerryLin\LineBot\BotUtils;
 use TerryLin\LineBot\Model\SportsFieldInfo;
 
-class PostbackEventHandler implements EventHandlerInterface
+class PostbackHandler implements EventHandlerInterface
 {
     private readonly Client $httpClient;
 
