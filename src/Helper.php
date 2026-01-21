@@ -9,19 +9,20 @@ class Helper
     private const COURTS_JSON_FILE    = __DIR__ . '/../storage/data/courts.json';
     private const FETCH_COURTS_SCRIPT = __DIR__ . '/../scripts/fetchCourts.php';
     private const MESSAGES_FILE       = __DIR__ . '/../app/messages.php';
-    private static $courst            = [];
 
     public static function getCourts(): array
     {
-        if (empty(self::$courst)) {
+        static $courst = [];
+
+        if (empty($courst)) {
             if (!file_exists(self::COURTS_JSON_FILE)) {
                 include_once self::FETCH_COURTS_SCRIPT;
             }
 
-            self::$courst = json_decode(file_get_contents(self::COURTS_JSON_FILE));
+            $courst = json_decode(file_get_contents(self::COURTS_JSON_FILE));
         }
 
-        return self::$courst;
+        return $courst;
     }
 
     public static function encodeUrlPath(string $url): string
