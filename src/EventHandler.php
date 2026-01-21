@@ -5,48 +5,56 @@ declare(strict_types=1);
 namespace TerryLin\LineBot;
 
 use LINE\Clients\MessagingApi\Api\MessagingApiApi;
-use LINE\Clients\MessagingApi\ApiException;
 use LINE\Clients\MessagingApi\Model\ReplyMessageRequest;
-use LINE\Clients\MessagingApi\Model\TextMessage;
-use LINE\Constants\MessageType;
+use LINE\Webhook\Model\Event;
+use LINE\Webhook\Model\FollowEvent;
+use LINE\Webhook\Model\JoinEvent;
+use LINE\Webhook\Model\LocationMessageContent;
 use LINE\Webhook\Model\MessageEvent;
+use LINE\Webhook\Model\PostbackEvent;
 use LINE\Webhook\Model\TextMessageContent;
-use Psr\Log\LoggerInterface;
+use TerryLin\LineBot\EventHandler\EventHandlerInterface;
+use TerryLin\LineBot\EventHandler\FollowHandler;
+use TerryLin\LineBot\EventHandler\JoinHandler;
+use TerryLin\LineBot\EventHandler\MessageHandler\LocationHandler;
+use TerryLin\LineBot\EventHandler\MessageHandler\TextHandler;
+use TerryLin\LineBot\EventHandler\PostbackHandler;
 
 class EventHandler
 {
     public function __construct(
-        private readonly LoggerInterface $logger,
         private readonly MessagingApiApi $bot,
     ) {
     }
 
     public function handle(array $events): void
     {
+        /** @var Event $event */
         foreach ($events as $event) {
-            if (!($event instanceof MessageEvent)) {
-                $this->logger->info('Non message event has come');
-                continue;
+            /** @var EventHandlerInterface $handler */
+            $handler = null;
+
+            if ($event instanceof MessageEvent) {
+                $message = $event->getMessage();
+                if ($message instanceof TextMessageContent) {
+                    $handler = new TextHandler($message);
+                } elseif ($message instanceof LocationMessageContent) {
+                    $handler = new LocationHandler($message);
+                }
+            } elseif ($event instanceof PostbackEvent) {
+                $handler = new PostbackHandler($event);
+            } elseif ($event instanceof FollowEvent) {
+                $handler = new FollowHandler();
+            } elseif ($event instanceof JoinEvent) {
+                $handler = new JoinHandler();
             }
 
-            $message = $event->getMessage();
-            if (!($message instanceof TextMessageContent)) {
-                $this->logger->info('Non text message has come');
-                continue;
-            }
-
-            $replyText = $message->getText();
-
-            try {
-                $this->bot->replyMessage(new ReplyMessageRequest([
+            $this->bot->replyMessage(
+                new ReplyMessageRequest([
                     'replyToken' => $event->getReplyToken(),
-                    'messages'   => [(new TextMessage())->setText($replyText)->setType(MessageType::TEXT)],
-                ]));
-            } catch (ApiException $e) {
-                $this->logger->error($e->getCode() . ' ' . $e->getResponseBody());
-            } catch (\Throwable $th) {
-                $this->logger->error($th);
-            }
+                    'messages'   => $handler->getReplyMessages(),
+                ])
+            );
         }
     }
 }

@@ -9,6 +9,7 @@ use Monolog\Level;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
 use Psr\Log\LoggerInterface;
+use TerryLin\LineBot\EventHandler;
 use TerryLin\LineBot\Settings;
 
 return [
@@ -45,5 +46,9 @@ return [
             config: $config,
         );
         return $bot;
+    },
+
+    EventHandler::class => function ($c) {
+        return new EventHandler($c->get(MessagingApiApi::class));
     },
 ];
