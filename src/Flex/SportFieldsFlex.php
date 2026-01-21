@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TerryLin\LineBot\Handler\MessageHandler\Flex;
+namespace TerryLin\LineBot\Flex;
 
 use LINE\Clients\MessagingApi\Model\FlexBox;
 use LINE\Clients\MessagingApi\Model\FlexBubble;
@@ -26,7 +26,7 @@ use LINE\Constants\MessageType;
 use TerryLin\LineBot\BotUtils;
 use TerryLin\LineBot\Model\SportsFieldInfo;
 
-class FlexSampleSportsField
+class SportFieldsFlex
 {
     /**
      * @param SportsFieldInfo[] $sportsFieldInfoList

@@ -8,7 +8,7 @@ use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Constants\MessageType;
 use LINE\Webhook\Model\LocationMessageContent;
 use TerryLin\LineBot\BotUtils;
-use TerryLin\LineBot\Handler\MessageHandler\Flex\FlexSampleSportsField;
+use TerryLin\LineBot\Flex\SportFieldsFlex;
 use TerryLin\LineBot\Model\SportsFieldInfo;
 
 class LocationHandler implements HandlerInterface
@@ -57,7 +57,7 @@ class LocationHandler implements HandlerInterface
             ];
         }
 
-        $flexMessage = FlexSampleSportsField::get($result);
+        $flexMessage = SportFieldsFlex::get($result);
         $textMessage = new TextMessage([
             'type' => MessageType::TEXT,
             'text' => '請點選您想去的球場',
