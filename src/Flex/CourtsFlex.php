@@ -23,7 +23,7 @@ use LINE\Constants\Flex\ComponentSpacing;
 use LINE\Constants\Flex\ComponentType;
 use LINE\Constants\Flex\ContainerType;
 use LINE\Constants\MessageType;
-use TerryLin\LineBot\BotUtils;
+use TerryLin\LineBot\Helper;
 use TerryLin\LineBot\Model\Court;
 
 class CourtsFlex
@@ -81,7 +81,7 @@ class CourtsFlex
     {
         return new FlexImage([
             'type'        => ComponentType::IMAGE,
-            'url'         => BotUtils::encodeUrlPath($court->Photo1),
+            'url'         => Helper::encodeUrlPath($court->Photo1),
             'size'        => ComponentImageSize::FULL,
             'aspectRatio' => '320:213',
             'aspectMode'  => ComponentImageAspectMode::COVER,

@@ -10,7 +10,7 @@ use LINE\Clients\MessagingApi\Model\Message;
 use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Constants\MessageType;
 use LINE\Webhook\Model\PostbackEvent;
-use TerryLin\LineBot\BotUtils;
+use TerryLin\LineBot\Helper;
 use TerryLin\LineBot\Model\Court;
 
 class PostbackHandler implements HandlerInterface
@@ -28,7 +28,7 @@ class PostbackHandler implements HandlerInterface
         parse_str($this->event->getPostback()->getData(), $data);
         $GymID = (int) $data['GymID'];
 
-        $courts = BotUtils::getCourts();
+        $courts = Helper::getCourts();
 
         /** @var Court $court */
         foreach ($courts as $court) {

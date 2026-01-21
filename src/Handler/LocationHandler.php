@@ -7,8 +7,8 @@ namespace TerryLin\LineBot\Handler;
 use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Constants\MessageType;
 use LINE\Webhook\Model\LocationMessageContent;
-use TerryLin\LineBot\BotUtils;
 use TerryLin\LineBot\Flex\CourtsFlex;
+use TerryLin\LineBot\Helper;
 use TerryLin\LineBot\Model\Court;
 
 class LocationHandler implements HandlerInterface
@@ -47,7 +47,7 @@ class LocationHandler implements HandlerInterface
     {
         $userLocation = [$this->message->getLatitude(), $this->message->getLongitude()];
 
-        $courts = BotUtils::getCourts();
+        $courts = Helper::getCourts();
 
         /** @var Court $court */
         foreach ($courts as $court) {

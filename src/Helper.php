@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace TerryLin\LineBot;
 
-class BotUtils
+class Helper
 {
     private const COURTS_JSON_FILE    = __DIR__ . '/../storage/data/courts.json';
     private const FETCH_COURTS_SCRIPT = __DIR__ . '/../scripts/fetchCourts.php';
