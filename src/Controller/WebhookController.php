@@ -28,34 +28,34 @@ class WebhookController
 
     public function __invoke(Request $req, Response $res): Response
     {
-        // send response immediately by fastcgi_finish_request
-        if (function_exists('fastcgi_finish_request')) {
-            fastcgi_finish_request();
-        }
-
-        $signature = $req->getHeader(HTTPHeader::LINE_SIGNATURE);
-        if (empty($signature)) {
-            return $res->withStatus(400, 'Bad Request');
-        }
-
-        // Check request with signature and parse request
         try {
+            // send response immediately by fastcgi_finish_request
+            if (function_exists('fastcgi_finish_request')) {
+                fastcgi_finish_request();
+            }
+
+            $signature = $req->getHeader(HTTPHeader::LINE_SIGNATURE);
+            if (empty($signature)) {
+                return $res->withStatus(400, 'Bad Request');
+            }
+
             $secret       = $this->settings->get('bot.channelSecret');
             $body         = $req->getBody()->getContents();
             $parsedEvents = EventRequestParser::parseEventRequest($body, $secret, $signature[0]);
+
+            $this->eventHandler->handle($parsedEvents->getEvents());
+
+            return $res->withStatus(200, 'OK');
         } catch (InvalidSignatureException $e) {
             return $res->withStatus(400, 'Invalid signature');
         } catch (InvalidEventRequestException $e) {
             return $res->withStatus(400, "Invalid event request");
-        }
-
-        try {
-            $this->eventHandler->handle($parsedEvents->getEvents());
         } catch (ApiException $e) {
             $this->logger->error($e->getMessage());
             return $res->withStatus(400, "Invalid event request");
+        } catch (\Throwable $e) {
+            $this->logger->error($e->getMessage());
+            return $res->withStatus(500, 'Internal Server Error');
         }
-
-        return $res->withStatus(200, 'OK');
     }
 }
