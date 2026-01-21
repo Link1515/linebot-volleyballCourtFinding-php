@@ -13,12 +13,12 @@ use LINE\Webhook\Model\LocationMessageContent;
 use LINE\Webhook\Model\MessageEvent;
 use LINE\Webhook\Model\PostbackEvent;
 use LINE\Webhook\Model\TextMessageContent;
-use TerryLin\LineBot\EventHandler\EventHandlerInterface;
-use TerryLin\LineBot\EventHandler\FollowHandler;
-use TerryLin\LineBot\EventHandler\JoinHandler;
-use TerryLin\LineBot\EventHandler\MessageHandler\LocationHandler;
-use TerryLin\LineBot\EventHandler\MessageHandler\TextHandler;
-use TerryLin\LineBot\EventHandler\PostbackHandler;
+use TerryLin\LineBot\Handler\FollowHandler;
+use TerryLin\LineBot\Handler\HandlerInterface;
+use TerryLin\LineBot\Handler\JoinHandler;
+use TerryLin\LineBot\Handler\LocationHandler;
+use TerryLin\LineBot\Handler\PostbackHandler;
+use TerryLin\LineBot\Handler\TextHandler;
 
 class EventHandler
 {
@@ -31,7 +31,7 @@ class EventHandler
     {
         /** @var Event $event */
         foreach ($events as $event) {
-            /** @var EventHandlerInterface $handler */
+            /** @var HandlerInterface $handler */
             $handler = null;
 
             if ($event instanceof MessageEvent) {

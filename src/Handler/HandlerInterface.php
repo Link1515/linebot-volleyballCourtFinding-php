@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace TerryLin\LineBot\EventHandler;
+namespace TerryLin\LineBot\Handler;
 
-interface EventHandlerInterface
+interface HandlerInterface
 {
     public function getReplyMessages(): array;
 }

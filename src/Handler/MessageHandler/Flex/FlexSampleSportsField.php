@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TerryLin\LineBot\EventHandler\MessageHandler\Flex;
+namespace TerryLin\LineBot\Handler\MessageHandler\Flex;
 
 use LINE\Clients\MessagingApi\Model\FlexBox;
 use LINE\Clients\MessagingApi\Model\FlexBubble;

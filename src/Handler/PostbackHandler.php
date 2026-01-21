@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TerryLin\LineBot\EventHandler;
+namespace TerryLin\LineBot\Handler;
 
 use GuzzleHttp\Client;
 use LINE\Clients\MessagingApi\Model\LocationMessage;
@@ -13,7 +13,7 @@ use LINE\Webhook\Model\PostbackEvent;
 use TerryLin\LineBot\BotUtils;
 use TerryLin\LineBot\Model\SportsFieldInfo;
 
-class PostbackHandler implements EventHandlerInterface
+class PostbackHandler implements HandlerInterface
 {
     private readonly Client $httpClient;
 

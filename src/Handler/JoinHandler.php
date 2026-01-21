@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace TerryLin\LineBot\EventHandler;
+namespace TerryLin\LineBot\Handler;
 
 use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Constants\MessageType;
 
-class FollowHandler implements EventHandlerInterface
+class JoinHandler implements HandlerInterface
 {
     public function __construct()
     {
@@ -18,7 +18,7 @@ class FollowHandler implements EventHandlerInterface
         return [
             new TextMessage([
                 'type' => MessageType::TEXT,
-                'text' => '感謝您的追蹤',
+                'text' => '您好，歡迎使用 超級排🏐球場 LINE 機器人',
             ])
         ];
     }

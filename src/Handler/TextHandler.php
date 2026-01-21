@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TerryLin\LineBot\EventHandler\MessageHandler;
+namespace TerryLin\LineBot\Handler;
 
 use LINE\Clients\MessagingApi\Model\LocationAction;
 use LINE\Clients\MessagingApi\Model\QuickReply;
@@ -11,9 +11,8 @@ use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Constants\ActionType;
 use LINE\Constants\MessageType;
 use LINE\Webhook\Model\TextMessageContent;
-use TerryLin\LineBot\EventHandler\EventHandlerInterface;
 
-class TextHandler implements EventHandlerInterface
+class TextHandler implements HandlerInterface
 {
     public function __construct(
         private readonly TextMessageContent $message

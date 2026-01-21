@@ -2,17 +2,16 @@
 
 declare(strict_types=1);
 
-namespace TerryLin\LineBot\EventHandler\MessageHandler;
+namespace TerryLin\LineBot\Handler;
 
 use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Constants\MessageType;
 use LINE\Webhook\Model\LocationMessageContent;
 use TerryLin\LineBot\BotUtils;
-use TerryLin\LineBot\EventHandler\EventHandlerInterface;
-use TerryLin\LineBot\EventHandler\MessageHandler\Flex\FlexSampleSportsField;
+use TerryLin\LineBot\Handler\MessageHandler\Flex\FlexSampleSportsField;
 use TerryLin\LineBot\Model\SportsFieldInfo;
 
-class LocationHandler implements EventHandlerInterface
+class LocationHandler implements HandlerInterface
 {
     public function __construct(
         private readonly LocationMessageContent $message
