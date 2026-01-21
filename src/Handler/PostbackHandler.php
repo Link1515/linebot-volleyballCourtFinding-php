@@ -34,7 +34,7 @@ class PostbackHandler implements HandlerInterface
         foreach ($courts as $court) {
             if ($court->GymID === $GymID) {
                 $city       = mb_substr($court->Address, 0, 3);
-                $weacherMsg = $this->getWeatherMsg($city);
+                $weatherMsg = $this->getWeatherMsg($city);
 
                 return [
                     new LocationMessage([
@@ -44,7 +44,7 @@ class PostbackHandler implements HandlerInterface
                         'latitude'  => (float) explode(',', $court->LatLng)[0],
                         'longitude' => (float) explode(',', $court->LatLng)[1],
                     ]),
-                    $weacherMsg
+                    $weatherMsg
                 ];
             }
         }
