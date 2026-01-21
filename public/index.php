@@ -15,7 +15,7 @@ if ($isProduction) {
     $containerBuilder->enableCompilation(__DIR__ . '/../var/cache/php-di');
 }
 
-$containerBuilder->addDefinitions(__DIR__ . '/../app/dependencies.php');
+$containerBuilder->addDefinitions(__DIR__ . '/../app/container.php');
 
 $container = $containerBuilder->build();
 
