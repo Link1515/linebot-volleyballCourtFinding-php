@@ -36,7 +36,7 @@ class CourtsFlex
     {
         return new FlexMessage([
             'type'     => MessageType::FLEX,
-            'altText'  => '距離您最近的球場',
+            'altText'  => Helper::t('courtAround'),
             'contents' => [
                 'type'     => ContainerType::CAROUSEL,
                 'contents' => self::createBubbles($courts),
@@ -64,7 +64,7 @@ class CourtsFlex
                         'type'        => ActionType::POSTBACK,
                         'label'       => 'action',
                         'data'        => 'GymID=' . $court->GymID,
-                        'displayText' => $court->Name
+                        'displayText' => Helper::t('userSelection', ['name' => $court->Name])
                     ]),
                 ])
             );
@@ -110,7 +110,7 @@ class CourtsFlex
                 ]),
                 new FlexText([
                     'type'   => ComponentType::TEXT,
-                    'text'   => '距離: 約 ' . self::formatDistance($court->Distance),
+                    'text'   => Helper::t('distance', ['distance' => self::formatDistance($court->Distance)]),
                     'weight' => ComponentFontWeight::BOLD,
                     'size'   => '12px',
                     'align'  => ComponentAlign::CENTER,

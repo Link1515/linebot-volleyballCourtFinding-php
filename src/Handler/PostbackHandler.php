@@ -52,43 +52,48 @@ class PostbackHandler implements HandlerInterface
         return [
             new TextMessage([
                 'type' => MessageType::TEXT,
-                'text' => '找不到這個地點',
+                'text' => Helper::t('notFound'),
             ])
         ];
     }
 
     private function getWeatherMsg(string $city): Message
     {
-        $cityConvertList = ['彰化市', '嘉義市', '花蓮市'];
+        try {
+            $cityConvertList = ['彰化市', '嘉義市', '花蓮市'];
 
-        if (in_array($city, $cityConvertList)) {
-            $city = str_replace('市', '縣', $city);
+            if (in_array($city, $cityConvertList)) {
+                $city = str_replace('市', '縣', $city);
+            }
+
+            $res = $this->httpClient->request('GET', 'https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001', [
+                'query' => [
+                    'Authorization' => $_ENV['WEATHER_API_KEY'],
+                    'locationName'  => $city
+                ]
+            ]);
+            $weatherData = json_decode($res->getBody()->getContents(), true)['records']['location'][0]['weatherElement'];
+
+            $precipitation  = $weatherData[1]['time'][0]['parameter']['parameterName'];
+            $minTemperature = $weatherData[2]['time'][0]['parameter']['parameterName'];
+            $discription    = $weatherData[3]['time'][0]['parameter']['parameterName'];
+            $maxTemperature = $weatherData[4]['time'][0]['parameter']['parameterName'];
+
+            return new TextMessage([
+                'type' => MessageType::TEXT,
+                'text' => Helper::t('weatherInfo', [
+                    'city'           => $city,
+                    'description'    => $discription,
+                    'maxTemperature' => $maxTemperature,
+                    'minTemperature' => $minTemperature,
+                    'precipitation'  => $precipitation
+                ]),
+            ]);
+        } catch (\Exception $e) {
+            return new TextMessage([
+                'type' => MessageType::TEXT,
+                'text' => Helper::t('weatherServiceError'),
+            ]);
         }
-
-        $res = $this->httpClient->request('GET', 'https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001', [
-            'query' => [
-                'Authorization' => $_ENV['WEATHER_API_KEY'],
-                'locationName'  => $city
-            ]
-        ]);
-        $weatherData = json_decode($res->getBody()->getContents(), true)['records']['location'][0]['weatherElement'];
-
-        $precipitation          = (int) $weatherData[1]['time'][0]['parameter']['parameterName'];
-        $precipitationAlertIcon = $precipitation > 60 ? '⚠️' : '';
-        $minTemperature         = $weatherData[2]['time'][0]['parameter']['parameterName'];
-        $discription            = $weatherData[3]['time'][0]['parameter']['parameterName'];
-        $maxTemperature         = $weatherData[4]['time'][0]['parameter']['parameterName'];
-
-        $text = <<<Text
-        🌡{$city}今日{$discription}
-        🔺️️最高溫: {$maxTemperature} 度
-        ️️️🔺️最低溫: {$minTemperature} 度 
-        🔺️降雨機率: {$precipitationAlertIcon} {$precipitation}% {$precipitationAlertIcon}
-        Text;
-
-        return new TextMessage([
-            'type' => MessageType::TEXT,
-            'text' => $text,
-        ]);
     }
 }

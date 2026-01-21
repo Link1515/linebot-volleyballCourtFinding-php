@@ -29,7 +29,7 @@ class LocationHandler implements HandlerInterface
             return [
                 $textMessage = new TextMessage([
                     'type' => MessageType::TEXT,
-                    'text' => '附近沒有球場',
+                    'text' => Helper::t('noCourtAround'),
                 ])
             ];
         }
@@ -37,7 +37,7 @@ class LocationHandler implements HandlerInterface
         $flexMessage = CourtsFlex::get($nearbyCourts);
         $textMessage = new TextMessage([
             'type' => MessageType::TEXT,
-            'text' => '請點選您想去的球場',
+            'text' => Helper::t('selectCourt'),
         ]);
 
         return [$flexMessage, $textMessage];

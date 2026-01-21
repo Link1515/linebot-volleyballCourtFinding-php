@@ -6,6 +6,7 @@ namespace TerryLin\LineBot\Handler;
 
 use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Constants\MessageType;
+use TerryLin\LineBot\Helper;
 
 class JoinHandler implements HandlerInterface
 {
@@ -18,7 +19,7 @@ class JoinHandler implements HandlerInterface
         return [
             new TextMessage([
                 'type' => MessageType::TEXT,
-                'text' => '您好，歡迎使用 超級排🏐球場 LINE 機器人',
+                'text' => Helper::t('join'),
             ])
         ];
     }

@@ -6,6 +6,7 @@ namespace TerryLin\LineBot\Handler;
 
 use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Constants\MessageType;
+use TerryLin\LineBot\Helper;
 
 class FollowHandler implements HandlerInterface
 {
@@ -18,7 +19,7 @@ class FollowHandler implements HandlerInterface
         return [
             new TextMessage([
                 'type' => MessageType::TEXT,
-                'text' => '感謝您的追蹤',
+                'text' => Helper::t('follow'),
             ])
         ];
     }
