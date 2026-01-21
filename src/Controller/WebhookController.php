@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TerryLin\LineBot\Controller;
 
 use LINE\Clients\MessagingApi\Api\MessagingApiApi;
+use LINE\Clients\MessagingApi\ApiException;
 use LINE\Constants\HTTPHeader;
 use LINE\Parser\EventRequestParser;
 use LINE\Parser\Exception\InvalidEventRequestException;
@@ -48,9 +49,13 @@ class WebhookController
             return $res->withStatus(400, "Invalid event request");
         }
 
-        $this->eventHandler->handle($parsedEvents->getEvents());
+        try {
+            $this->eventHandler->handle($parsedEvents->getEvents());
+        } catch (ApiException $e) {
+            $this->logger->error($e->getMessage());
+            return $res->withStatus(400, "Invalid event request");
+        }
 
-        $res->withStatus(200, 'OK');
-        return $res;
+        return $res->withStatus(200, 'OK');
     }
 }
