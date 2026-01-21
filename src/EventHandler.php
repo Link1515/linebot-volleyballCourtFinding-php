@@ -49,6 +49,10 @@ class EventHandler
                 $handler = new JoinHandler();
             }
 
+            if (empty($handler)) {
+                return;
+            }
+
             $this->bot->replyMessage(
                 new ReplyMessageRequest([
                     'replyToken' => $event->getReplyToken(),
