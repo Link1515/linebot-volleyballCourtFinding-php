@@ -66,6 +66,7 @@ return (new PhpCsFixer\Config())
         'unary_operator_spaces'                       => true,
         'whitespace_after_comma_in_array'             => true,
         'space_after_semicolon'                       => true,
+        'no_unused_imports'                           => true,
     ])
     ->setLineEnding("\n")
     ->setFinder($finder);
