@@ -13,6 +13,9 @@ use TerryLin\LineBot\Model\SportsFieldInfo;
 
 class LocationHandler implements HandlerInterface
 {
+    private const AMOUNT_OF_FIELD = 5;
+    private const MAX_DISTANCE    = 15; // km
+
     public function __construct(
         private readonly LocationMessageContent $message
     ) {
@@ -20,9 +23,28 @@ class LocationHandler implements HandlerInterface
 
     public function getReplyMessages(): array
     {
-        $AMOUNT_OF_FIELD = 5;
-        $MAX_DISTANCE    = 15; // 15 km
+        $nearbyCourts = $this->getNearbyCourts();
 
+        if (count($nearbyCourts) === 0) {
+            return [
+                $textMessage = new TextMessage([
+                    'type' => MessageType::TEXT,
+                    'text' => '附近沒有球場',
+                ])
+            ];
+        }
+
+        $flexMessage = SportFieldsFlex::get($nearbyCourts);
+        $textMessage = new TextMessage([
+            'type' => MessageType::TEXT,
+            'text' => '請點選您想去的球場',
+        ]);
+
+        return [$flexMessage, $textMessage];
+    }
+
+    private function getNearbyCourts()
+    {
         $userLocation = [$this->message->getLatitude(), $this->message->getLongitude()];
 
         $sportsFieldInfoList = BotUtils::getSportsFieldInfoList();
@@ -43,27 +65,11 @@ class LocationHandler implements HandlerInterface
             return $a->Distance <=> $b->Distance;
         });
 
-        $result = array_slice($sportsFieldInfoList, 0, $AMOUNT_OF_FIELD);
-        $result = array_filter($result, function ($sportField) use ($MAX_DISTANCE) {
-            return $sportField->Distance < $MAX_DISTANCE;
+        $result = array_slice($sportsFieldInfoList, 0, self::AMOUNT_OF_FIELD);
+        $result = array_filter($result, function ($sportField) {
+            return $sportField->Distance < self::MAX_DISTANCE;
         });
-
-        if (count($result) === 0) {
-            return [
-                $textMessage = new TextMessage([
-                    'type' => MessageType::TEXT,
-                    'text' => '附近沒有球場',
-                ])
-            ];
-        }
-
-        $flexMessage = SportFieldsFlex::get($result);
-        $textMessage = new TextMessage([
-            'type' => MessageType::TEXT,
-            'text' => '請點選您想去的球場',
-        ]);
-
-        return [$flexMessage, $textMessage];
+        return $result;
     }
 
     /**
