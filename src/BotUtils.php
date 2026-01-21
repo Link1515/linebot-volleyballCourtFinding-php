@@ -35,15 +35,15 @@ class BotUtils
         return self::createMessageReplyRequest($replyToken, [$textMessage]);
     }
 
-    public static function getSportsFieldInfoList(): array
+    public static function getCourts(): array
     {
-        $sportsFieldInfoListFile = __DIR__ . '/../storage/data/sportsFieldInfoList.json';
+        $courtsFile = __DIR__ . '/../storage/data/courts.json';
 
-        if (!file_exists($sportsFieldInfoListFile)) {
-            include_once __DIR__ . '/../scripts/fetchSportsFieldInfoList.php';
+        if (!file_exists($courtsFile)) {
+            include_once __DIR__ . '/../scripts/fetchCourts.php';
         }
 
-        return json_decode(file_get_contents($sportsFieldInfoListFile));
+        return json_decode(file_get_contents($courtsFile));
     }
 
     public static function encodeUrlPath(string $url): string

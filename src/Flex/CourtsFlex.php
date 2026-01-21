@@ -24,47 +24,47 @@ use LINE\Constants\Flex\ComponentType;
 use LINE\Constants\Flex\ContainerType;
 use LINE\Constants\MessageType;
 use TerryLin\LineBot\BotUtils;
-use TerryLin\LineBot\Model\SportsFieldInfo;
+use TerryLin\LineBot\Model\Court;
 
-class SportFieldsFlex
+class CourtsFlex
 {
     /**
-     * @param SportsFieldInfo[] $sportsFieldInfoList
+     * @param Court[] $courts
      * @return FlexMessage
      */
-    public static function get(array $sportsFieldInfoList): FlexMessage
+    public static function get(array $courts): FlexMessage
     {
         return new FlexMessage([
             'type'     => MessageType::FLEX,
             'altText'  => '距離您最近的球場',
             'contents' => [
                 'type'     => ContainerType::CAROUSEL,
-                'contents' => self::createBubbles($sportsFieldInfoList),
+                'contents' => self::createBubbles($courts),
             ]
         ]);
     }
 
     /**
-     * @param SportsFieldInfo[] $sportsFieldInfoList
+     * @param Court[] $courts
      * @return FlexBubble[]
      */
-    private static function createBubbles(array $sportsFieldInfoList): array
+    private static function createBubbles(array $courts): array
     {
         $bubbles = [];
 
-        foreach ($sportsFieldInfoList as $sportsFieldInfo) {
+        foreach ($courts as $court) {
             array_push(
                 $bubbles,
                 new FlexBubble([
                     'type'   => ContainerType::BUBBLE,
                     'size'   => BubbleContainerSize::MICRO,
-                    'hero'   => self::createHeroBlock($sportsFieldInfo),
-                    'body'   => self::createBodyBlock($sportsFieldInfo),
+                    'hero'   => self::createHeroBlock($court),
+                    'body'   => self::createBodyBlock($court),
                     'action' => new PostbackAction([
                         'type'        => ActionType::POSTBACK,
                         'label'       => 'action',
-                        'data'        => 'GymID=' . $sportsFieldInfo->GymID,
-                        'displayText' => $sportsFieldInfo->Name
+                        'data'        => 'GymID=' . $court->GymID,
+                        'displayText' => $court->Name
                     ]),
                 ])
             );
@@ -74,14 +74,14 @@ class SportFieldsFlex
     }
 
     /**
-     * @param SportsFieldInfo $sportsFieldInfo
+     * @param Court $court
      * @return FlexComponent
      */
-    private static function createHeroBlock($sportsFieldInfo): FlexComponent
+    private static function createHeroBlock($court): FlexComponent
     {
         return new FlexImage([
             'type'        => ComponentType::IMAGE,
-            'url'         => BotUtils::encodeUrlPath($sportsFieldInfo->Photo1),
+            'url'         => BotUtils::encodeUrlPath($court->Photo1),
             'size'        => ComponentImageSize::FULL,
             'aspectRatio' => '320:213',
             'aspectMode'  => ComponentImageAspectMode::COVER,
@@ -89,10 +89,10 @@ class SportFieldsFlex
     }
 
     /**
-     * @param SportsFieldInfo $sportsFieldInfo
+     * @param Court $court
      * @return FlexBox
      */
-    private static function createBodyBlock($sportsFieldInfo): FlexBox
+    private static function createBodyBlock($court): FlexBox
     {
         return new FlexBox([
             'type'       => ComponentType::BOX,
@@ -102,7 +102,7 @@ class SportFieldsFlex
             'contents'   => [
                 new FlexText([
                     'type'   => ComponentType::TEXT,
-                    'text'   => $sportsFieldInfo->Name,
+                    'text'   => $court->Name,
                     'weight' => ComponentFontWeight::BOLD,
                     'size'   => ComponentFontSize::SM,
                     'align'  => ComponentAlign::CENTER,
@@ -110,7 +110,7 @@ class SportFieldsFlex
                 ]),
                 new FlexText([
                     'type'   => ComponentType::TEXT,
-                    'text'   => '距離: 約 ' . self::formatDistance($sportsFieldInfo->Distance),
+                    'text'   => '距離: 約 ' . self::formatDistance($court->Distance),
                     'weight' => ComponentFontWeight::BOLD,
                     'size'   => '12px',
                     'align'  => ComponentAlign::CENTER,
@@ -126,7 +126,7 @@ class SportFieldsFlex
                             'contents' => [
                                 new FlexText([
                                     'type'  => 'text',
-                                    'text'  => '📍' . $sportsFieldInfo->Address,
+                                    'text'  => '📍' . $court->Address,
                                     'size'  => ComponentFontSize::SM,
                                     'flex'  => 5,
                                     'wrap'  => true,

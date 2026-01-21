@@ -20,6 +20,6 @@ namespace TerryLin\LineBot\Model;
  * @property string|null $Declaration
  * @property string|null $LandAttrName
  */
-class SportsFieldInfo
+class Court
 {
 }

@@ -8,8 +8,8 @@ use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Constants\MessageType;
 use LINE\Webhook\Model\LocationMessageContent;
 use TerryLin\LineBot\BotUtils;
-use TerryLin\LineBot\Flex\SportFieldsFlex;
-use TerryLin\LineBot\Model\SportsFieldInfo;
+use TerryLin\LineBot\Flex\CourtsFlex;
+use TerryLin\LineBot\Model\Court;
 
 class LocationHandler implements HandlerInterface
 {
@@ -34,7 +34,7 @@ class LocationHandler implements HandlerInterface
             ];
         }
 
-        $flexMessage = SportFieldsFlex::get($nearbyCourts);
+        $flexMessage = CourtsFlex::get($nearbyCourts);
         $textMessage = new TextMessage([
             'type' => MessageType::TEXT,
             'text' => '請點選您想去的球場',
@@ -47,27 +47,27 @@ class LocationHandler implements HandlerInterface
     {
         $userLocation = [$this->message->getLatitude(), $this->message->getLongitude()];
 
-        $sportsFieldInfoList = BotUtils::getSportsFieldInfoList();
+        $courts = BotUtils::getCourts();
 
-        /** @var SportsFieldInfo $sportsFieldInfo */
-        foreach ($sportsFieldInfoList as $sportsFieldInfo) {
+        /** @var Court $court */
+        foreach ($courts as $court) {
             $targetLocation = [
-                (float) explode(',', $sportsFieldInfo->LatLng)[0],
-                (float) explode(',', $sportsFieldInfo->LatLng)[1]
+                (float) explode(',', $court->LatLng)[0],
+                (float) explode(',', $court->LatLng)[1]
             ];
 
             $distance = $this->calculateDistance($userLocation, $targetLocation);
 
-            $sportsFieldInfo->Distance = round($distance, 2);
+            $court->Distance = round($distance, 2);
         }
 
-        usort($sportsFieldInfoList, function ($a, $b) {
+        usort($courts, function ($a, $b) {
             return $a->Distance <=> $b->Distance;
         });
 
-        $result = array_slice($sportsFieldInfoList, 0, self::AMOUNT_OF_FIELD);
-        $result = array_filter($result, function ($sportField) {
-            return $sportField->Distance < self::MAX_DISTANCE;
+        $result = array_slice($courts, 0, self::AMOUNT_OF_FIELD);
+        $result = array_filter($result, function ($court) {
+            return $court->Distance < self::MAX_DISTANCE;
         });
         return $result;
     }

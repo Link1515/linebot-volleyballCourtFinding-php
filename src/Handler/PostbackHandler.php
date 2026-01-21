@@ -11,7 +11,7 @@ use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Constants\MessageType;
 use LINE\Webhook\Model\PostbackEvent;
 use TerryLin\LineBot\BotUtils;
-use TerryLin\LineBot\Model\SportsFieldInfo;
+use TerryLin\LineBot\Model\Court;
 
 class PostbackHandler implements HandlerInterface
 {
@@ -28,21 +28,21 @@ class PostbackHandler implements HandlerInterface
         parse_str($this->event->getPostback()->getData(), $data);
         $GymID = (int) $data['GymID'];
 
-        $sportsFieldInfoList = BotUtils::getSportsFieldInfoList();
+        $courts = BotUtils::getCourts();
 
-        /** @var SportsFieldInfo $sportsFieldInfo */
-        foreach ($sportsFieldInfoList as $sportsFieldInfo) {
-            if ($sportsFieldInfo->GymID === $GymID) {
-                $city       = mb_substr($sportsFieldInfo->Address, 0, 3);
+        /** @var Court $court */
+        foreach ($courts as $court) {
+            if ($court->GymID === $GymID) {
+                $city       = mb_substr($court->Address, 0, 3);
                 $weacherMsg = $this->getWeatherMsg($city);
 
                 return [
                     new LocationMessage([
                         'type'      => MessageType::LOCATION,
-                        'title'     => $sportsFieldInfo->Name,
-                        'address'   => $sportsFieldInfo->Address,
-                        'latitude'  => (float) explode(',', $sportsFieldInfo->LatLng)[0],
-                        'longitude' => (float) explode(',', $sportsFieldInfo->LatLng)[1],
+                        'title'     => $court->Name,
+                        'address'   => $court->Address,
+                        'latitude'  => (float) explode(',', $court->LatLng)[0],
+                        'longitude' => (float) explode(',', $court->LatLng)[1],
                     ]),
                     $weacherMsg
                 ];

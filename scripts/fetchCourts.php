@@ -7,7 +7,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $client   = new GuzzleHttp\Client();
 $apiUrl   = 'https://iplay.sports.gov.tw/api/GymSearchAllList?$format=application/json;odata.metadata=none&Keyword=排球場';
 $dirPath  = __DIR__ . '/../storage/data';
-$filename = 'sportsFieldInfoList.json';
+$filename = 'courts.json';
 
 $res = $client->request('GET', $apiUrl);
 
