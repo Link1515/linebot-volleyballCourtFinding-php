@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace TerryLin\LineBot\EventHandler;
 
 use GuzzleHttp\Client;
-use LINE\Clients\MessagingApi\Api\MessagingApiApi;
 use LINE\Clients\MessagingApi\Model\LocationMessage;
 use LINE\Clients\MessagingApi\Model\Message;
 use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Constants\MessageType;
 use LINE\Webhook\Model\PostbackEvent;
-use Psr\Log\LoggerInterface;
 use TerryLin\LineBot\BotUtils;
 use TerryLin\LineBot\Model\SportsFieldInfo;
 
@@ -20,14 +18,12 @@ class PostbackHandler implements EventHandlerInterface
     private readonly Client $httpClient;
 
     public function __construct(
-        private readonly MessagingApiApi $bot,
-        private readonly LoggerInterface $logger,
         private readonly PostbackEvent $event
     ) {
         $this->httpClient = new Client();
     }
 
-    public function handle(): void
+    public function getReplyMessages(): array
     {
         parse_str($this->event->getPostback()->getData(), $data);
         $GymID = (int) $data['GymID'];
@@ -39,10 +35,8 @@ class PostbackHandler implements EventHandlerInterface
             if ($sportsFieldInfo->GymID === $GymID) {
                 $city       = mb_substr($sportsFieldInfo->Address, 0, 3);
                 $weacherMsg = $this->getWeatherMsg($city);
-                // $sportsFieldMsgList = $this->getSportsFieldMsgList($GymID);
 
-                $botRequest = BotUtils::createMessageReplyRequest($this->event->getReplyToken(), [
-                    // ...$sportsFieldMsgList,
+                return [
                     new LocationMessage([
                         'type'      => MessageType::LOCATION,
                         'title'     => $sportsFieldInfo->Name,
@@ -51,39 +45,14 @@ class PostbackHandler implements EventHandlerInterface
                         'longitude' => (float) explode(',', $sportsFieldInfo->LatLng)[1],
                     ]),
                     $weacherMsg
-                ]);
-
-                $this->bot->replyMessage($botRequest);
-
-                return;
+                ];
             }
         }
-    }
-
-    private function getSportsFieldMsgList(int $GymID): array
-    {
-        $res  = $this->httpClient->request('GET', 'https://iplay.sa.gov.tw/odata/Gym(' . $GymID . ')?$format=application/json;odata.metadata=none');
-        $data = json_decode($res->getBody()->getContents(), true);
-
-        // $image = BotUtils::encodeUrlPath($data['Photo1Url']);
-        $text = <<<Text
-        {$data['Name']}
-
-        {$data['Introduction']}
-
-        ☎️ {$data['OperationTel']}
-        📍 {$data['Addr']}
-        Text;
 
         return [
-            // new ImageMessage([
-            //     "type" => MessageType::IMAGE,
-            //     "originalContentUrl" => $image,
-            //     "previewImageUrl" => $image,
-            // ]),
             new TextMessage([
                 'type' => MessageType::TEXT,
-                'text' => $text,
+                'text' => '找不到這個地點',
             ])
         ];
     }

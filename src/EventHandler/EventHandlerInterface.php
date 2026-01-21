@@ -6,5 +6,5 @@ namespace TerryLin\LineBot\EventHandler;
 
 interface EventHandlerInterface
 {
-    public function handle();
+    public function getReplyMessages(): array;
 }

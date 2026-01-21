@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace TerryLin\LineBot\EventHandler\MessageHandler;
 
-use LINE\Clients\MessagingApi\Api\MessagingApiApi;
-use LINE\Clients\MessagingApi\ApiException;
 use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Constants\MessageType;
 use LINE\Webhook\Model\LocationMessageContent;
-use LINE\Webhook\Model\MessageEvent;
-use Psr\Log\LoggerInterface;
 use TerryLin\LineBot\BotUtils;
 use TerryLin\LineBot\EventHandler\EventHandlerInterface;
 use TerryLin\LineBot\EventHandler\MessageHandler\Flex\FlexSampleSportsField;
@@ -19,20 +15,16 @@ use TerryLin\LineBot\Model\SportsFieldInfo;
 class LocationHandler implements EventHandlerInterface
 {
     public function __construct(
-        private readonly MessagingApiApi $bot,
-        private readonly LoggerInterface $logger,
-        private readonly MessageEvent $event
+        private readonly LocationMessageContent $message
     ) {
     }
 
-    public function handle(): void
+    public function getReplyMessages(): array
     {
         $AMOUNT_OF_FIELD = 5;
         $MAX_DISTANCE    = 15; // 15 km
 
-        /** @var LocationMessageContent $locationMessage */
-        $locationMessage = $this->event->getMessage();
-        $userLocation    = [$locationMessage->getLatitude(), $locationMessage->getLongitude()];
+        $userLocation = [$this->message->getLatitude(), $this->message->getLongitude()];
 
         $sportsFieldInfoList = BotUtils::getSportsFieldInfoList();
 
@@ -58,9 +50,12 @@ class LocationHandler implements EventHandlerInterface
         });
 
         if (count($result) === 0) {
-            $botRequest = BotUtils::createTextReplyRequest($this->event->getReplyToken(), '附近沒有球場');
-            $this->bot->replyMessage($botRequest);
-            return;
+            return [
+                $textMessage = new TextMessage([
+                    'type' => MessageType::TEXT,
+                    'text' => '附近沒有球場',
+                ])
+            ];
         }
 
         $flexMessage = FlexSampleSportsField::get($result);
@@ -68,17 +63,8 @@ class LocationHandler implements EventHandlerInterface
             'type' => MessageType::TEXT,
             'text' => '請點選您想去的球場',
         ]);
-        $botRequest = BotUtils::createMessageReplyRequest(
-            $this->event->getReplyToken(),
-            [$flexMessage, $textMessage]
-        );
 
-        try {
-            $this->bot->replyMessage($botRequest);
-        } catch (ApiException $e) {
-            $this->logger->error('BODY:' . $e->getResponseBody());
-            throw $e;
-        }
+        return [$flexMessage, $textMessage];
     }
 
     /**

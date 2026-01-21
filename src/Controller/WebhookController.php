@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TerryLin\LineBot\Controller;
 
 use LINE\Clients\MessagingApi\Api\MessagingApiApi;
+use LINE\Clients\MessagingApi\Model\ReplyMessageRequest;
 use LINE\Constants\HTTPHeader;
 use LINE\Parser\EventRequestParser;
 use LINE\Parser\Exception\InvalidEventRequestException;
@@ -70,19 +71,24 @@ class WebhookController
             if ($event instanceof MessageEvent) {
                 $message = $event->getMessage();
                 if ($message instanceof TextMessageContent) {
-                    $handler = new TextHandler($this->bot, $this->logger, $req, $event);
+                    $handler = new TextHandler($message);
                 } elseif ($message instanceof LocationMessageContent) {
-                    $handler = new LocationHandler($this->bot, $this->logger, $event);
+                    $handler = new LocationHandler($message);
                 }
             } elseif ($event instanceof PostbackEvent) {
-                $handler = new PostbackHandler($this->bot, $this->logger, $event);
+                $handler = new PostbackHandler($event);
             } elseif ($event instanceof FollowEvent) {
-                $handler = new FollowHandler($this->bot, $this->logger, $event);
+                $handler = new FollowHandler();
             } elseif ($event instanceof JoinEvent) {
-                $handler = new JoinHandler($this->bot, $this->logger, $event);
+                $handler = new JoinHandler();
             }
 
-            $handler->handle();
+            $this->bot->replyMessage(
+                new ReplyMessageRequest([
+                    'replyToken' => $event->getReplyToken(),
+                    'messages'   => $handler->getReplyMessages(),
+                ])
+            );
         }
 
         $res->withStatus(200, 'OK');

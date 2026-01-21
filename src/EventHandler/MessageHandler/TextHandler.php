@@ -4,44 +4,36 @@ declare(strict_types=1);
 
 namespace TerryLin\LineBot\EventHandler\MessageHandler;
 
-use LINE\Clients\MessagingApi\Api\MessagingApiApi;
-use LINE\Clients\MessagingApi\ApiException;
 use LINE\Clients\MessagingApi\Model\LocationAction;
 use LINE\Clients\MessagingApi\Model\QuickReply;
 use LINE\Clients\MessagingApi\Model\QuickReplyItem;
-use LINE\Clients\MessagingApi\Model\ReplyMessageRequest;
 use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Constants\ActionType;
 use LINE\Constants\MessageType;
-use LINE\Webhook\Model\MessageEvent;
-use Psr\Http\Message\RequestInterface;
-use Psr\Log\LoggerInterface;
-use TerryLin\LineBot\BotUtils;
+use LINE\Webhook\Model\TextMessageContent;
 use TerryLin\LineBot\EventHandler\EventHandlerInterface;
 
 class TextHandler implements EventHandlerInterface
 {
     public function __construct(
-        private readonly MessagingApiApi $bot,
-        private readonly LoggerInterface $logger,
-        private readonly RequestInterface $req,
-        private readonly MessageEvent $event
+        private readonly TextMessageContent $message
     ) {
     }
 
-    public function handle(): void
+    public function getReplyMessages(): array
     {
-        $text       = $this->event->getMessage()->getText();
-        $replyToken = $this->event->getReplyToken();
+        $text = $this->message->getText();
 
         if ($text === '球場資訊') {
-            $this->locationQuickReply($replyToken);
+            return $this->locationQuickReply();
         } elseif ($text === '使用教學') {
-            $this->sendTutorialMsg($replyToken);
+            return $this->sendTutorialMsg();
         }
+
+        return [];
     }
 
-    private function sendTutorialMsg(string $replyToken): void
+    private function sendTutorialMsg()
     {
         $tutorialMsg = <<<'Msg'
         歡迎使用 超級排🏐球場 LINE 機器人
@@ -56,17 +48,15 @@ class TextHandler implements EventHandlerInterface
         如果發現問題，歡迎透過 GitHub 聯繫我!
         Msg;
 
-        $botRequest = BotUtils::createTextReplyRequest($replyToken, $tutorialMsg);
-
-        try {
-            $this->bot->replyMessage($botRequest);
-        } catch (ApiException $e) {
-            $this->logger->error('BODY:' . $e->getResponseBody());
-            throw $e;
-        }
+        return [
+            new TextMessage([
+                'type' => MessageType::TEXT,
+                'text' => $tutorialMsg,
+            ])
+        ];
     }
 
-    private function locationQuickReply(string $replyToken): void
+    private function locationQuickReply()
     {
         $quickReply = new QuickReply([
             'items' => [
@@ -80,22 +70,12 @@ class TextHandler implements EventHandlerInterface
             ]
         ]);
 
-        $message = new TextMessage([
-            'type'       => MessageType::TEXT,
-            'text'       => '請點下方的按鈕，傳送您的位置',
-            'quickReply' => $quickReply
-        ]);
-
-        $botRequest = new ReplyMessageRequest([
-            'replyToken' => $replyToken,
-            'messages'   => [$message],
-        ]);
-
-        try {
-            $this->bot->replyMessage($botRequest);
-        } catch (ApiException $e) {
-            $this->logger->error('BODY:' . $e->getResponseBody());
-            throw $e;
-        }
+        return [
+            new TextMessage([
+                'type'       => MessageType::TEXT,
+                'text'       => '請點下方的按鈕，傳送您的位置',
+                'quickReply' => $quickReply
+            ])
+        ];
     }
 }

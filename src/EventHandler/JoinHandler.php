@@ -4,29 +4,22 @@ declare(strict_types=1);
 
 namespace TerryLin\LineBot\EventHandler;
 
-use LINE\Clients\MessagingApi\Api\MessagingApiApi;
-use LINE\Webhook\Model\FollowEvent;
-use LINE\Webhook\Model\JoinEvent;
-use LINE\Webhook\Model\PostbackEvent;
-use Psr\Log\LoggerInterface;
-use TerryLin\LineBot\BotUtils;
+use LINE\Clients\MessagingApi\Model\TextMessage;
+use LINE\Constants\MessageType;
 
 class JoinHandler implements EventHandlerInterface
 {
-    public function __construct(
-        private readonly MessagingApiApi $bot,
-        private readonly LoggerInterface $logger,
-        private readonly JoinEvent $event
-    ) {
+    public function __construct()
+    {
     }
 
-    public function handle(): void
+    public function getReplyMessages(): array
     {
-        $botRequest = BotUtils::createTextReplyRequest(
-            $this->event->getReplyToken(),
-            '大家好，歡迎使用 超級排🏐球場 line機器人'
-        );
-
-        $this->bot->replyMessage($botRequest);
+        return [
+            new TextMessage([
+                'type' => MessageType::TEXT,
+                'text' => '您好，歡迎使用 超級排🏐球場 LINE 機器人',
+            ])
+        ];
     }
 }
