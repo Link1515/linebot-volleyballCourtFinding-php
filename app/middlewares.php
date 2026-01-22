@@ -19,7 +19,7 @@ return function (App $app): void {
         function ($request, $response, $exception) use ($app) {
             $response = $app->getResponseFactory()->createResponse(404);
             $response->getBody()->write('Not Found');
-            $response->withHeader('Content-Type', 'text/plain; charset=utf-8');
+            $response = $response->withHeader('Content-Type', 'text/plain; charset=utf-8');
             return $response;
         }
     );
