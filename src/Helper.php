@@ -19,7 +19,7 @@ class Helper
                 include_once self::FETCH_COURTS_SCRIPT;
             }
 
-            $courst = json_decode(file_get_contents(self::COURTS_JSON_FILE));
+            $courst = json_decode(file_get_contents(self::COURTS_JSON_FILE)) ?? [];
         }
 
         return $courst;
