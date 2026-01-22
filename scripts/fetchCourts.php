@@ -18,7 +18,7 @@ if (!is_dir($dirPath)) {
 $resData = json_decode($res->getBody()->getContents(), true);
 
 $filteredData = array_filter($resData, function ($data) {
-    return $data['OpenState'] !== 'N' && $data['RentState'] !== '不開放對外場地租借';
+    return $data['OpenState'] !== 'N';
 });
 $filteredData = array_values($filteredData);
 
