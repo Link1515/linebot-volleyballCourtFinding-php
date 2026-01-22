@@ -50,7 +50,7 @@ class EventHandler
             }
 
             if (empty($handler)) {
-                return;
+                continue;
             }
 
             $this->bot->replyMessage(
