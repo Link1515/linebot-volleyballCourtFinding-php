@@ -72,44 +72,32 @@ class LocationHandler implements HandlerInterface
         return $result;
     }
 
-    /**
-     * Calculates the distance between two locations based on their latitude and longitude.
-     *
-     * This function uses the Haversine formula to compute the great-circle distance
-     * between two points on the surface of a sphere, given their latitude and longitude
-     * coordinates.
-     *
-     * @param array $location1 An array representing the coordinates of the first location.
-     *                          $location1[0] represents the latitude, and $location1[1] represents the longitude.
-     * @param array $location2 An array representing the coordinates of the second location.
-     *                          $location2[0] represents the latitude, and $location2[1] represents the longitude.
-     *
-     * @return float Distance between two locations
-     */
-    private function calculateDistance(array $location1, array $location2): float
+    private const EARTH_RADIUS = [
+        'km' => 6371.0088,
+        'm'  => 6371008.8,
+        'nm' => 3440.0695, // nautical mile
+    ];
+
+    private function calculateDistance(array $a, array $b, string $unit = 'km'): float
     {
-        $lat1 = $location1[0];
-        $lon1 = $location1[1];
-        $lat2 = $location2[0];
-        $lon2 = $location2[1];
+        $lat1 = $this->toRad($a[0]);
+        $lat2 = $this->toRad($b[0]);
+        $dLat = $lat2 - $lat1;
+        $dLon = $this->toRad($b[1]) - $this->toRad($a[1]);
 
-        if ($lat1 === $lat2 && $lon1 === $lon2) {
-            return 0;
-        } else {
-            $radlat1  = (pi() * $lat1) / 180;
-            $radlat2  = (pi() * $lat2) / 180;
-            $theta    = $lon1 - $lon2;
-            $radtheta = (pi() * $theta) / 180;
-            $dist     = sin($radlat1) * sin($radlat2) + cos($radlat1) * cos($radlat2) * cos($radtheta);
-            if ($dist > 1) {
-                $dist = 1;
-            }
-            $dist = acos($dist);
-            $dist = ($dist * 180) / pi();
-            $dist = $dist * 60 * 1.1515;
-            $dist = $dist * 1.609344;
+        // Harversine
+        $sinDLat = sin($dLat / 2);
+        $sinDLon = sin($dLon / 2);
+        $h       = $sinDLat * $sinDLat + cos($lat1) * cos($lat2) * $sinDLon * $sinDLon;
 
-            return $dist;
-        }
+        $clampedH = min(1, max(0, $h));
+        $c        = 2 * asin(sqrt($clampedH));
+
+        return self::EARTH_RADIUS[$unit] * $c;
+    }
+
+    private function toRad(float $deg): float
+    {
+        return ($deg * M_PI) / 180.0;
     }
 }
