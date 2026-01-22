@@ -53,10 +53,14 @@ class EventHandler
                 continue;
             }
 
+            $message = $handler->getReplyMessages();
+            if (empty($message)) {
+                continue;
+            }
             $this->bot->replyMessage(
                 new ReplyMessageRequest([
                     'replyToken' => $event->getReplyToken(),
-                    'messages'   => $handler->getReplyMessages(),
+                    'messages'   => $message,
                 ])
             );
         }
